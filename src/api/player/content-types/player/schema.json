@@ -4,15 +4,21 @@
   "info": {
     "singularName": "player",
     "pluralName": "players",
-    "displayName": "player"
+    "displayName": "اللاعب",
+    "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
     "name": {
-      "type": "string"
+      "type": "string",
+      "pluginOptions": {}
+    },
+    "image_url": {
+      "type": "string",
+      "pluginOptions": {}
     }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "leagues",
+  "info": {
+    "singularName": "league",
+    "pluralName": "leagues",
+    "displayName": "الدوري",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "logo_url": {
+      "type": "string"
+    },
+    "laws": {
+      "type": "richtext"
+    }
+  }
+}
