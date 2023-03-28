@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "leagues",
+  "collectionName": "tournaments",
   "info": {
-    "singularName": "league",
-    "pluralName": "leagues",
-    "displayName": "الدوري",
+    "singularName": "tournament",
+    "pluralName": "tournaments",
+    "displayName": "الجولة",
     "description": ""
   },
   "options": {
@@ -15,10 +15,10 @@
     "name": {
       "type": "string"
     },
-    "tournaments": {
+    "teams": {
       "type": "relation",
       "relation": "oneToMany",
-      "target": "api::tournament.tournament"
+      "target": "api::team.team"
     }
   }
 }

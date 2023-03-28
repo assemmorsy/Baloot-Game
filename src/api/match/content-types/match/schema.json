@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "matches",
+  "info": {
+    "singularName": "match",
+    "pluralName": "matches",
+    "displayName": "المباراة",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "teams": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team.team"
+    },
+    "referees": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::referee.referee"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "لم تبدأ بعد",
+        "بدأت",
+        "انتهت"
+      ]
+    },
+    "start_at": {
+      "type": "datetime"
+    }
+  }
+}

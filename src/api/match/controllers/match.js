@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * rule controller
+ * match controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::rule.rule');
+module.exports = createCoreController('api::match.match');

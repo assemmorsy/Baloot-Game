@@ -16,9 +16,22 @@
       "type": "string",
       "pluginOptions": {}
     },
-    "image_url": {
-      "type": "string",
-      "pluginOptions": {}
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "players"
     }
   }
 }

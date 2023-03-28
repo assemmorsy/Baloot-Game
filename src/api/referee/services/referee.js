@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * rule service
+ * referee service
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::rule.rule');
+module.exports = createCoreService('api::referee.referee');

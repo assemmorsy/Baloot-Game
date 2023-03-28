@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * rule router
+ * tournament router
  */
 
 const { createCoreRouter } = require('@strapi/strapi').factories;
 
-module.exports = createCoreRouter('api::rule.rule');
+module.exports = createCoreRouter('api::tournament.tournament');
