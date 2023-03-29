@@ -10,19 +10,11 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {
-    "i18n": {
-      "localized": true
-    }
-  },
+  "pluginOptions": {},
   "attributes": {
     "name": {
       "type": "string",
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "pluginOptions": {}
     },
     "type": {
       "type": "enumeration",
@@ -31,11 +23,7 @@
         "حكم مساعد (متابعة لعب)",
         "حكم مساعد (متابعة نشرة)"
       ],
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "pluginOptions": {}
     },
     "image": {
       "type": "media",
@@ -47,11 +35,7 @@
         "videos",
         "audios"
       ],
-      "pluginOptions": {
-        "i18n": {
-          "localized": true
-        }
-      }
+      "pluginOptions": {}
     }
   }
 }

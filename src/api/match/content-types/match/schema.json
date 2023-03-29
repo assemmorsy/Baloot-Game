@@ -12,14 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
-      "type": "string"
-    },
-    "teams": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::team.team"
-    },
     "referees": {
       "type": "relation",
       "relation": "oneToMany",
@@ -35,6 +27,109 @@
     },
     "start_at": {
       "type": "datetime"
+    },
+    "tournament": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::tournament.tournament",
+      "inversedBy": "matches"
+    },
+    "team_1": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team"
+    },
+    "team_2": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::team.team"
+    },
+    "statsJson": {
+      "type": "json"
+    },
+    "team1_score": {
+      "type": "integer"
+    },
+    "team2_score": {
+      "type": "integer"
+    },
+    "team1_akak": {
+      "type": "integer"
+    },
+    "team2_akak": {
+      "type": "integer"
+    },
+    "team1_akalat": {
+      "type": "integer"
+    },
+    "team2_akalat": {
+      "type": "integer"
+    },
+    "team1_moshtary_sun": {
+      "type": "integer"
+    },
+    "team2_moshtary_sun": {
+      "type": "integer"
+    },
+    "team1_moshtary_hakam": {
+      "type": "integer"
+    },
+    "team2_moshtary_hakam": {
+      "type": "integer"
+    },
+    "team1_moshtrayat_nagha": {
+      "type": "integer"
+    },
+    "team2_moshtrayat_nagha": {
+      "type": "integer"
+    },
+    "team1_moshtrayat_khasera": {
+      "type": "integer"
+    },
+    "team2_moshtrayat_khasera": {
+      "type": "integer"
+    },
+    "team1_sra": {
+      "type": "integer"
+    },
+    "team2_sra": {
+      "type": "integer"
+    },
+    "team1_baloot": {
+      "type": "integer"
+    },
+    "team2_baloot": {
+      "type": "integer"
+    },
+    "team1_khamsin": {
+      "type": "integer"
+    },
+    "team2_khamsin": {
+      "type": "integer"
+    },
+    "team1_100": {
+      "type": "integer"
+    },
+    "team2_100": {
+      "type": "integer"
+    },
+    "team1_400": {
+      "type": "integer"
+    },
+    "team2_400": {
+      "type": "integer"
+    },
+    "team1_kababit_sun_count": {
+      "type": "integer"
+    },
+    "team2_kababit_sun_count": {
+      "type": "integer"
+    },
+    "team1_kababit_hakam_count": {
+      "type": "integer"
+    },
+    "team2_kababit_hakam_count": {
+      "type": "integer"
     }
   }
 }
