@@ -23,7 +23,8 @@
         "لم تبدأ بعد",
         "بدأت",
         "انتهت"
-      ]
+      ],
+      "default": "لم تبدأ بعد"
     },
     "start_at": {
       "type": "datetime"
@@ -43,9 +44,6 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::team.team"
-    },
-    "statsJson": {
-      "type": "json"
     },
     "team1_score": {
       "type": "integer"
@@ -130,6 +128,11 @@
     },
     "team2_kababit_hakam_count": {
       "type": "integer"
+    },
+    "text": {
+      "type": "richtext",
+      "default": "-",
+      "required": false
     }
   }
 }

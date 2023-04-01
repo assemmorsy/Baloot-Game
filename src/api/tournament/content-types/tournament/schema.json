@@ -20,6 +20,12 @@
       "relation": "oneToMany",
       "target": "api::match.match",
       "mappedBy": "tournament"
+    },
+    "league": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::league.league",
+      "inversedBy": "tournments"
     }
   }
 }
