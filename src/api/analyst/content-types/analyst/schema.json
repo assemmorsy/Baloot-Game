@@ -1,0 +1,36 @@
+{
+  "kind": "collectionType",
+  "collectionName": "analysts",
+  "info": {
+    "singularName": "analyst",
+    "pluralName": "analysts",
+    "displayName": "المحلل",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "image": {
+      "type": "media",
+      "multiple": true,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "studio": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::studio.studio",
+      "inversedBy": "analysts"
+    }
+  }
+}

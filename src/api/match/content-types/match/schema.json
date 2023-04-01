@@ -129,10 +129,8 @@
     "team2_kababit_hakam_count": {
       "type": "integer"
     },
-    "text": {
-      "type": "richtext",
-      "default": "-",
-      "required": false
+    "url": {
+      "type": "string"
     }
   }
 }

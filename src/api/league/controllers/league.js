@@ -10,6 +10,7 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
     return {
         async findAllPlayersOfLeague(ctx) {
             let leagueId = strapi.requestContext.get().params.id;
+            
             const team1Ids = await strapi.db.connection.raw(
                 `SELECT DISTINCT(team_id) from matches_team_1_links WHERE match_id in (
                     SELECT match_id  from matches_tournament_links where  tournament_id in
@@ -33,6 +34,7 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
 
             if (matchesIds && matchesIds.length > 0) {
                 try {
+                    console.log(matchesIds);
                     let matches = await Promise.all(matchesIds.map(async (elm) => {
                         let match = await strapi.entityService.findOne("api::match.match", parseInt(elm.match_id), {
                             fields: ["id", "state", "start_at", "team_1_score", "team_2_score"],
@@ -75,7 +77,8 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
                     console.error(err, 'background: #222; color: #ff0000');
                 }
             } else {
-                return ctx.NotFound('League Not Found')
+                
+                // return ctx.NotFound('League Not Found') // causes an error
             }
         }
     }

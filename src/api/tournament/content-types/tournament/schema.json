@@ -26,6 +26,12 @@
       "relation": "manyToOne",
       "target": "api::league.league",
       "inversedBy": "tournments"
+    },
+    "studio": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::studio.studio",
+      "inversedBy": "tournament"
     }
   }
 }

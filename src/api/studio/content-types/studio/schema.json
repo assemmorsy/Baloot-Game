@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "studios",
+  "info": {
+    "singularName": "studio",
+    "pluralName": "studios",
+    "displayName": "استوديو",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "date_time": {
+      "type": "datetime"
+    },
+    "name": {
+      "type": "string"
+    },
+    "tournament": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::tournament.tournament",
+      "mappedBy": "studio"
+    },
+    "url": {
+      "type": "string"
+    },
+    "analysts": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::analyst.analyst",
+      "mappedBy": "studio"
+    }
+  }
+}
