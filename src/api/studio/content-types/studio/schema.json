@@ -12,7 +12,7 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "date_time": {
+    "start_at": {
       "type": "datetime"
     },
     "name": {

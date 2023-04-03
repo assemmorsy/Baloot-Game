@@ -36,6 +36,17 @@ module.exports = {
                 policies: [],
                 middlewares: [],
             },
-        }
+        },
+        
+        {
+            method: "GET",
+            path: "/league/:id/studios",
+            handler: "league.findAllStudiosofLeague",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
     ]
 }
