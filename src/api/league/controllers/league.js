@@ -48,7 +48,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
                 return {
                     ...studio,
                     analysts: studio.analysts.map((analyst)=>{
-                        console.log(analyst);
+                       
                         return {...analyst, image: analyst.image ? analyst.image.formats.thumbnail.url : null}  
                     })
                 }
@@ -235,7 +235,6 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           );
 
           return matches.map((match) => {
-            // console.log(match)
             let newMatch = {
               ...match,
               team_1: {
