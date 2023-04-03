@@ -184,7 +184,6 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     async findAllMatchesOfLeague(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
       if (!leagueId || isNaN(leagueId)) {
-        //throw error League Not Found
         ctx.throw(404, "League Not Found");
       }
 
