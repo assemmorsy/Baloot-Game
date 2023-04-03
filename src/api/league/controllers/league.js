@@ -8,15 +8,54 @@ const { createCoreController } = require('@strapi/strapi').factories;
 module.exports = createCoreController('api::league.league', ({ strapi }) => {
 
     return {
+        async findAllRefereesofLeague(ctx){
+          
+            let leagueId = strapi.requestContext.get().params.id;
+            
+            if(!leagueId || isNaN(leagueId)){
+                ctx.throw(404, "No referees were found")
+            }
+            const refereesIds = await strapi.db.connection.raw(`
+            SELECT referee_id as id FROM matches_referees_links 
+            WHERE matches_referees_links.match_id in 
+            (SELECT matches_tournament_links.match_id from matches_tournament_links 
+            WHERE matches_tournament_links.tournament_id in
+            (SELECT tournaments_league_links.tournament_id FROM tournaments_league_links 
+            WHERE tournaments_league_links.league_id = ${leagueId}))`);
+            console.log([...refereesIds])
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>>")
+            if (refereesIds.length>0){
+             try {
+                let referees = await Promise.all(refereesIds.map(async(idMap)=> {
+                    return await strapi.entityService.findOne('api::referee.referee',idMap.id, 
+                     {fields: ["id", "name","type"],
+                     populate:{
+                         image: {
+                          fields:["formats"],
+                      }
+                          } ,
+                      }
+                      );
+                      
+                 }))
+                 
+                 return referees.map((referee)=>{
+                    return {...referee,image: referee.image ? referee.image.formats.thumbnail.url:null }
+                 })
+             } catch (err) {
+                console.error(err);
+             }
+                
+            }
+            
+        },
         async findAllPlayersOfLeague(ctx) {
             let leagueId = strapi.requestContext.get().params.id;
 
             if (!leagueId || isNaN(leagueId)) {
                 // Throw Error
                 ctx.throw(404, "League Not Found")
-
             }
-
             const team1_ids = await strapi.db.connection.raw(`
                 select DISTINCT( mt1L.team_id )from matches 
                 JOIN  matches_team_1_links mt1L on mt1L.match_id = matches.id  

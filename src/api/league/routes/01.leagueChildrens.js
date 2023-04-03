@@ -26,6 +26,16 @@ module.exports = {
                 policies: [],
                 middlewares: [],
             },
+        },
+        {
+            method: "GET",
+            path: "/league/:id/referees",
+            handler: "league.findAllRefereesofLeague",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
         }
     ]
 }
