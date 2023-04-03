@@ -11,7 +11,7 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
         async findAllRefereesofLeague(ctx){
           
             let leagueId = strapi.requestContext.get().params.id;
-            
+             
             if(!leagueId || isNaN(leagueId)){
                 ctx.throw(404, "No referees were found")
             }
@@ -136,7 +136,7 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
 
                     let matches = await Promise.all(matchesIds.map(async (elm) => {
                         let match = await strapi.entityService.findOne("api::match.match", parseInt(elm.match_id), {
-                            fields: ["id", "state", "start_at", "url", "team_1_score", "team_2_score"],
+                            fields: ["id", "state", "start_at", "team_1_score", "team_2_score"],
                             populate: {
                                 tournament: {
                                     fields: ["id", "name"]

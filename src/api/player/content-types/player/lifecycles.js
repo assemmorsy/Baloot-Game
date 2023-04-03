@@ -1,3 +1,4 @@
+
 const utils = require('@strapi/utils');
 const { ApplicationError } = utils.errors;
 
