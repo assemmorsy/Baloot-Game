@@ -14,17 +14,16 @@
   "attributes": {
     "name": {
       "type": "string",
-      "pluginOptions": {}
+      "pluginOptions": {},
+      "required": true,
+      "minLength": 2
     },
     "image": {
       "type": "media",
       "multiple": false,
       "required": false,
       "allowedTypes": [
-        "images",
-        "files",
-        "videos",
-        "audios"
+        "images"
       ]
     },
     "team": {
