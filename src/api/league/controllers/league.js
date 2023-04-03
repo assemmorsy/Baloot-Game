@@ -5,11 +5,15 @@
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
-
 module.exports = createCoreController('api::league.league', ({ strapi }) => {
+
     return {
         async findAllPlayersOfLeague(ctx) {
             let leagueId = strapi.requestContext.get().params.id;
+
+            if (!leagueId || isNaN(leagueId)) {
+                // Throw Error
+            }
 
             const team1_ids = await strapi.db.connection.raw(`
                 select DISTINCT( mt1L.team_id )from matches 
@@ -61,10 +65,11 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
                         }
                     })
                 } catch (err) {
-                    console.error(err)
+                    console.error("===========> ERROR IN players In league Controller<===========")
+                    console.error(err);
                 }
             } else {
-                //throw error not found 
+                // Throw Error
             }
 
 
@@ -73,6 +78,10 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
         async findAllMatchesOfLeague(ctx) {
 
             let leagueId = strapi.requestContext.get().params.id;
+            if (!leagueId || isNaN(leagueId)) {
+                //throw error not found 
+            }
+
             const matchesIds = await strapi.db.connection.raw(`
                 SELECT match_id  from matches_tournament_links where  tournament_id in 
                     (SELECT tournament_id from tournaments_league_links WHERE league_id = ${leagueId});`)
@@ -120,11 +129,11 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
                         return newMatch
                     })
                 } catch (err) {
-                    console.error(err, 'background: #222; color: #ff0000');
+                    console.error("===========> ERROR IN matches In league Controller<===========")
+                    console.error(err);
                 }
             } else {
                 //throw error not found 
-                // return ctx.NotFound('League Not Found') // causes an error
             }
         }
     }
