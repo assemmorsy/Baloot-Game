@@ -11,7 +11,7 @@ module.exports = createCoreController('api::league.league', ({ strapi }) => {
         async findAllRefereesofLeague(ctx){
           
             let leagueId = strapi.requestContext.get().params.id;
-            
+             
             if(!leagueId || isNaN(leagueId)){
                 ctx.throw(404, "No referees were found")
             }
