@@ -131,6 +131,12 @@
     },
     "url": {
       "type": "string"
+    },
+    "team1_abnat": {
+      "type": "decimal"
+    },
+    "team2_abnat": {
+      "type": "decimal"
     }
   }
 }
