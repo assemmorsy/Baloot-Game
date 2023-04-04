@@ -37,7 +37,7 @@ module.exports = {
                 middlewares: [],
             },
         },
-        
+
         {
             method: "GET",
             path: "/league/:id/studios",

@@ -8,16 +8,16 @@ const { createCoreController } = require("@strapi/strapi").factories;
 
 function orederTeams(team1, team2) {
   if (team1.totalScore === team2.totalScore) {
-    return team1.abnat - team2.abnat;
+    return team2.abnat - team1.abnat;
   } else {
-    return team1.totalScore - team2.totalScore;
+    return team2.totalScore - team1.totalScore;
   }
 }
 
 module.exports = createCoreController("api::league.league", ({ strapi }) => {
   return {
-    async findAllTeamsofLeague(ctx){
-        let leagueId = strapi.requestContext.get().params.id;
+    async findAllTeamsofLeague(ctx) {
+      let leagueId = strapi.requestContext.get().params.id;
 
       if (!leagueId || isNaN(leagueId)) {
         // Throw Error
@@ -84,47 +84,62 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       if (!leagueId || isNaN(leagueId)) {
         ctx.throw(404, "League Not Found");
       }
-      let tableObj = {};
 
-      let leagueTeams = await this.findAllTeamsofLeague(ctx);
-      leagueTeams.forEach((team) => {
-        tableObj[team.id] = {
-          id: team.id,
-          name: team.name,
-          abnat: 0,
-          play: 0,
-          lost: 0,
-          win: 0,
-          totalScore: 0,
-        };
-      });
+      try {
+        let tableObj = {};
 
-      let matches = await this.findAllMatchesOfLeague(ctx);
+        let leagueTeams = await this.findAllTeamsofLeague(ctx);
+        leagueTeams.forEach((team) => {
+          tableObj[team.id] = {
+            id: team.id,
+            name: team.name,
+            abnat: 0,
+            play: 0,
+            lost: 0,
+            win: 0,
+            totalScore: 0,
+            totalScoreForAbnat: 0,
+            totalNumberOfRounds: 0
+          };
+        });
 
-      for (let matchIdx = 0; matchIdx < matches.length; matchIdx++) {
-        const match = matches[matchIdx];
-        if (match.state !== "انتهت") continue;
-        for (let teamIdx = 1; teamIdx <= 2; teamIdx++) {
-          const team = match[`team_${teamIdx}`];
-          console.log(tableObj[team.id]) /////
-          tableObj[team.id].abnat += team.abnat;
-          tableObj[team.id].play++;
+        let matches = await this.findAllMatchesOfLeague(ctx);
+
+        for (let matchIdx = 0; matchIdx < matches.length; matchIdx++) {
+          const match = matches[matchIdx];
+          if (match.state !== "انتهت") continue;
+          for (let teamIdx = 1; teamIdx <= 2; teamIdx++) {
+            const team = match[`team_${teamIdx}`];
+            console.log(tableObj[team.id])
+            tableObj[team.id].totalScoreForAbnat += team.totalScoreForAbnat;
+            tableObj[team.id].totalNumberOfRounds += team.totalNumberOfRounds;
+            tableObj[team.id].play++;
+          }
+          if (match.team_1.score > match.team_2.score) {
+            tableObj[match.team_1.id].win++;
+            tableObj[match.team_1.id].totalScore = tableObj[match.team_1.id].win * 3;
+            tableObj[match.team_2.id].lost++;
+
+          } else {
+            tableObj[match.team_2.id].win++;
+            tableObj[match.team_2.id].totalScore = tableObj[match.team_2.id].win * 3;
+            tableObj[match.team_1.id].lost++;
+          }
+          tableObj[match.team_1.id].abnat = tableObj[match.team_1.id].totalScoreForAbnat / tableObj[match.team_1.id].totalNumberOfRounds;
+          tableObj[match.team_2.id].abnat = tableObj[match.team_2.id].totalScoreForAbnat / tableObj[match.team_2.id].totalNumberOfRounds;
         }
-        if (match.team_1.score > match.team_2.score) {
-          tableObj[match.team_1.id].win++;
-          tableObj[match.team_1.id].totalScore = tableObj[match.team_1.id].win * 3;
-        } else {
-          tableObj[match.team_2.id].win++;
-          tableObj[match.team_2.id].totalScore = tableObj[match.team_2.id].win * 3;
+
+        let tableArray = [];
+        for (const team_id in tableObj) {
+          tableArray.push(tableObj[team_id]);
         }
+
+        return tableArray.sort(orederTeams);
+      } catch (err) {
+        console.error(err);
+        ctx.throw(404, "League Not Found")
       }
 
-      let tableArray = [];
-      for (const team_id in tableObj) {
-        tableArray.push(tableObj[team_id]);
-      }
-
-      return tableArray.sort(orederTeams);
     },
     async findAllStudiosofLeague(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
@@ -329,6 +344,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
                     "team_2_score",
                     "team_1_abnat",
                     "team_2_abnat",
+                    "numberOfRounds"
                   ],
                   populate: {
                     tournament: {
@@ -358,20 +374,23 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           );
 
           return matches.map((match) => {
+            console.log(match);
             let newMatch = {
               ...match,
               team_1: {
                 id: match.team_1.id,
                 name: match.team_1.name,
                 score: match.team1_score,
-                abnat: match.team_1.team_1_abnat,
+                totalScoreForAbnat: match.team1_abnat,
+                totalNumberOfRounds: match.numberOfRounds,
                 logo: match.team_1.logo.formats.thumbnail.url,
               },
               team_2: {
                 id: match.team_2.id,
                 name: match.team_2.name,
                 score: match.team2_score,
-                abnat: match.team_2.team_2_abnat,
+                totalScoreForAbnat: match.team2_abnat,
+                totalNumberOfRounds: match.numberOfRounds,
                 logo: match.team_2.logo.formats.thumbnail.url,
               },
             };
