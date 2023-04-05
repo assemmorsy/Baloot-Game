@@ -110,7 +110,6 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           if (match.state !== "انتهت") continue;
           for (let teamIdx = 1; teamIdx <= 2; teamIdx++) {
             const team = match[`team_${teamIdx}`];
-            console.log(tableObj[team.id])
             tableObj[team.id].totalScoreForAbnat += team.totalScoreForAbnat;
             tableObj[team.id].totalNumberOfRounds += team.totalNumberOfRounds;
             tableObj[team.id].play++;
@@ -125,8 +124,8 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
             tableObj[match.team_2.id].totalScore = tableObj[match.team_2.id].win * 3;
             tableObj[match.team_1.id].lost++;
           }
-          tableObj[match.team_1.id].abnat = tableObj[match.team_1.id].totalScoreForAbnat / tableObj[match.team_1.id].totalNumberOfRounds;
-          tableObj[match.team_2.id].abnat = tableObj[match.team_2.id].totalScoreForAbnat / tableObj[match.team_2.id].totalNumberOfRounds;
+          tableObj[match.team_1.id].abnat = (tableObj[match.team_1.id].totalScoreForAbnat / tableObj[match.team_1.id].totalNumberOfRounds).toFixed(1);
+          tableObj[match.team_2.id].abnat = (tableObj[match.team_2.id].totalScoreForAbnat / tableObj[match.team_2.id].totalNumberOfRounds).toFixed(1);
         }
 
         let tableArray = [];
@@ -374,7 +373,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           );
 
           return matches.map((match) => {
-            console.log(match);
+            // console.log(match);
             let newMatch = {
               ...match,
               team_1: {
