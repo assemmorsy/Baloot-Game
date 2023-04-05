@@ -65,7 +65,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           return teams.map((team) => {
             return {
               ...team,
-              logo: team.logo.formats.thumbnail.url,
+              logo: team.logo?.formats.thumbnail.url,
             };
           });
         } catch (err) {
@@ -339,6 +339,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
                     "id",
                     "state",
                     "start_at",
+                    "url",
                     "team_1_score",
                     "team_2_score",
                     "team_1_abnat",
@@ -382,7 +383,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
                 score: match.team1_score,
                 totalScoreForAbnat: match.team1_abnat,
                 totalNumberOfRounds: match.numberOfRounds,
-                logo: match.team_1.logo.formats.thumbnail.url,
+                logo: match.team_1.logo?.formats.thumbnail.url,
               },
               team_2: {
                 id: match.team_2.id,
@@ -390,7 +391,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
                 score: match.team2_score,
                 totalScoreForAbnat: match.team2_abnat,
                 totalNumberOfRounds: match.numberOfRounds,
-                logo: match.team_2.logo.formats.thumbnail.url,
+                logo: match.team_2.logo?.formats.thumbnail.url,
               },
             };
 

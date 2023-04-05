@@ -61,12 +61,12 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                         id: match.team_1.id,
                         name: match.team_1.name,
                         score: match.team1_score,
-                        logo: match.team_1.logo.formats.thumbnail.url,
+                        logo: match.team_1.logo?.formats.thumbnail.url,
                         players: match.team_1.players.map((p) => {
                             return {
                                 id: p.id,
                                 name: p.name,
-                                image: p.image.formats.thumbnail.url
+                                image: p.image?.formats.thumbnail.url
                             }
                         }),
                         statistics: {
@@ -90,12 +90,12 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                         id: match.team_2.id,
                         name: match.team_2.name,
                         score: match.team2_score,
-                        logo: match.team_2.logo.formats.thumbnail.url,
+                        logo: match.team_2.logo?.formats.thumbnail.url,
                         players: match.team_2.players.map((p) => {
                             return {
                                 id: p.id,
                                 name: p.name,
-                                image: p.image.formats.thumbnail.url
+                                image: p.image?.formats.thumbnail.url
                             }
                         }),
                         statistics: {
