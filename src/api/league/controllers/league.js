@@ -85,8 +85,18 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         ctx.throw(404, "League Not Found");
       }
 
+
       try {
         let tableObj = {};
+
+        const league = await strapi.entityService.findOne("api::league.league", leagueId, {
+          fields: ["id", "name"],
+          populate: {
+            image: {
+              fields: "formats"
+            }
+          }
+        })
 
         let leagueTeams = await this.findAllTeamsofLeague(ctx);
         leagueTeams.forEach((team) => {
@@ -133,7 +143,12 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           tableArray.push(tableObj[team_id]);
         }
 
-        return tableArray.sort(orederTeams);
+        return {
+          league: {
+            ...league,
+            image: league.image?.formats.thumbnail.url
+          }, table: tableArray.sort(orederTeams)
+        };
       } catch (err) {
         console.error(err);
         ctx.throw(404, "League Not Found")

@@ -124,3 +124,4 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
 
     }
 });
+;
