@@ -69,21 +69,21 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                                 image: p.image?.formats.thumbnail.url
                             }
                         }),
-                        statistics: {
-                            akak: match.team1_akak,
-                            akalat: match.team1_akalat,
-                            moshtary_sun: match.team1_moshtary_sun,
-                            moshtary_hakam: match.team1_moshtary_hakam,
-                            moshtrayat_nagha: match.team1_moshtrayat_nagha,
-                            moshtrayat_khasera: match.team1_moshtrayat_khasera,
-                            sra: match.team1_sra,
-                            baloot: match.team1_baloot,
-                            khamsin: match.team1_khamsin,
-                            100: match.team1_100,
-                            400: match.team1_400,
-                            kababit_sun_count: match.team1_kababit_sun_count,
-                            kababit_hakam_count: match.team1_kababit_hakam_count
-                        }
+                        statistics: [
+                            { value: match.team1_akak, name: "عدد الأكك" },
+                            { value: match.team1_akalat, name: "الأكلات" },
+                            { value: match.team1_moshtary_sun, name: "مشترى صن" },
+                            { value: match.team1_moshtary_hakam, name: "مشترى حكم" },
+                            { value: match.team1_moshtrayat_nagha, name: "مشتريات ناجحة" },
+                            { value: match.team1_moshtrayat_khasera, name: "مشتريات خسرانة" },
+                            { value: match.team1_sra, name: "سرا" },
+                            { value: match.team1_baloot, name: "بلوت" },
+                            { value: match.team1_khamsin, name: "خمسين" },
+                            { value: match.team1_100, name: "مية" },
+                            { value: match.team1_400, name: "أربعمية" },
+                            { value: match.team1_kababit_sun_count, name: "عدد الكبابيت صن" },
+                            { value: match.team1_kababit_hakam_count, name: "عدد الكبابيت حكم" },
+                        ]
 
                     },
                     team2: {
@@ -98,21 +98,21 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                                 image: p.image?.formats.thumbnail.url
                             }
                         }),
-                        statistics: {
-                            akak: match.team2_akak,
-                            akalat: match.team2_akalat,
-                            moshtary_sun: match.team2_moshtary_sun,
-                            moshtary_hakam: match.team2_moshtary_hakam,
-                            moshtrayat_nagha: match.team2_moshtrayat_nagha,
-                            moshtrayat_khasera: match.team2_moshtrayat_khasera,
-                            sra: match.team2_sra,
-                            baloot: match.team2_baloot,
-                            khamsin: match.team2_khamsin,
-                            100: match.team2_100,
-                            400: match.team2_400,
-                            kababit_sun_count: match.team2_kababit_sun_count,
-                            kababit_hakam_count: match.team2_kababit_hakam_count
-                        }
+                        statistics: [
+                            { value: match.team2_akak, name: "عدد الأكك" },
+                            { value: match.team2_akalat, name: "الأكلات" },
+                            { value: match.team2_moshtary_sun, name: "مشترى صن" },
+                            { value: match.team2_moshtary_hakam, name: "مشترى حكم" },
+                            { value: match.team2_moshtrayat_nagha, name: "مشتريات ناجحة" },
+                            { value: match.team2_moshtrayat_khasera, name: "مشتريات خسرانة" },
+                            { value: match.team2_sra, name: "سرا" },
+                            { value: match.team2_baloot, name: "بلوت" },
+                            { value: match.team2_khamsin, name: "خمسين" },
+                            { value: match.team2_100, name: "مية" },
+                            { value: match.team2_400, name: "أربعمية" },
+                            { value: match.team2_kababit_sun_count, name: "عدد الكبابيت صن" },
+                            { value: match.team2_kababit_hakam_count, name: "عدد الكبابيت حكم" },
+                        ]
                     }
                 }
                 return mappedMatch
