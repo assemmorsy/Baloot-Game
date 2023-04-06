@@ -27,7 +27,8 @@
       "default": "لم تبدأ بعد"
     },
     "start_at": {
-      "type": "datetime"
+      "type": "datetime",
+      "required": true
     },
     "tournament": {
       "type": "relation",
@@ -46,102 +47,135 @@
       "target": "api::team.team"
     },
     "team1_score": {
-      "type": "integer"
+      "type": "integer",
+      "required": false,
+      "default": 0
     },
     "team2_score": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_akak": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_akak": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_akalat": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_akalat": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_moshtary_sun": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_moshtary_sun": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_moshtary_hakam": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_moshtary_hakam": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_moshtrayat_nagha": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_moshtrayat_nagha": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_moshtrayat_khasera": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_moshtrayat_khasera": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_sra": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_sra": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_baloot": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_baloot": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_khamsin": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_khamsin": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_100": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_100": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_400": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_400": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_kababit_sun_count": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_kababit_sun_count": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team1_kababit_hakam_count": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "team2_kababit_hakam_count": {
-      "type": "integer"
+      "type": "integer",
+      "default": 0
     },
     "url": {
-      "type": "string"
+      "type": "string",
+      "regex": "[-a-zA-Z0-9@:%_\\+.~#?&//=]{2,256}\\.[a-z]{2,4}\\b(\\/[-a-zA-Z0-9@:%_\\+.~#?&//=]*)?"
     },
     "team1_abnat": {
-      "type": "decimal"
+      "type": "decimal",
+      "default": 0
     },
     "team2_abnat": {
-      "type": "decimal"
+      "type": "decimal",
+      "default": 0
     },
     "numberOfRounds": {
       "type": "integer",
-      "min": 1,
-      "max": 3
+      "min": 0,
+      "max": 3,
+      "default": 0
     }
   }
 }
