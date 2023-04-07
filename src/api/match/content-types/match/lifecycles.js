@@ -1,4 +1,3 @@
-// const { beforeCreate } = require("../../../player/content-types/player/lifecycles");
 const { ApplicationError } = require("@strapi/utils").errors;
 module.exports = {
 
@@ -16,10 +15,6 @@ module.exports = {
         }
     },
 
-
-
-
-    // update json only contains the new value
     async beforeUpdate(event) {
         let params = event.params;
         let matchId = params.where.id;
