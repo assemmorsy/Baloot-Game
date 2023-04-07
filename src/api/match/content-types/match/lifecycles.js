@@ -16,32 +16,50 @@ module.exports = {
         }
     },
 
-    beforeUpdate(event) {
-        let data = event.params.data;
 
-        // console.log("team1")
-        // console.log(data.team_1)
-        // console.log("team2")
-        // console.log(data.team_2)
-        if (data.team_1.connect.length == 0 || data.team_2.connect.length == 0) {
-            throw new ApplicationError("You Must Enter Two Teams")
-            
+
+
+    // update json only contains the new value
+    async beforeUpdate(event) {
+        let params = event.params;
+        let matchId = params.where.id;
+
+        let match = await strapi.entityService.findOne("api::match.match", matchId, {
+            populate: {
+                team_1: {
+                    fields: ["id"],
+                },
+                team_2: {
+                    fields: ["id"],
+                },
+            },
+        })
+        // the user erased the team 1
+        if (params.data.team_1.disconnect.length !== 0 && params.data.team_1.connect.length == 0) {
+            throw new ApplicationError("you must choose team 1")
         }
-        if (data.team_1.connect[0].id == data.team_2.connect[0].id) {
-           
-            throw new ApplicationError("The Two Teams Must Be Different")
+        // the user erased the team 2
+        if (params.data.team_2.disconnect.length !== 0 && params.data.team_2.connect.length == 0) {
+            throw new ApplicationError("you must choose team 1")
         }
-        // this part is being handled in the admin panel 
-        // using the deafult value = 0
 
-        // let data = event.params.data;
-        // if (data.state === "مباشر") {
-        //     data.team1_score = 0,
-        //     data.team2_score = 0,
-        //     console.log(event.data)
-        // };
+        // the user updated team 1 with same value as team 2
+        if (params.data.team_1.connect.length !== 0) {
 
-    },
+            if (params.data.team_1.connect[0].id == match.team_2.id) {
 
+                throw new ApplicationError("Team 1 cann't be the same as team 2")
+            }
+        }
+        // the user updated team 2 with same value as team 1
+        if (params.data.team_2.connect.length !== 0) {
+            if (params.data.team_2.connect[0].id == match.team_1.id) {
+
+                throw new ApplicationError("Team 2 cann't be the same as team 1")
+
+            }
+        }
+
+    }
 
 }
