@@ -44,13 +44,13 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         team2_ids &&
         team2_ids.length > 0
       ) {
-        const teams_ids = [...new Set([...team1_ids, ...team2_ids])];
+        const teams_ids = [...new Set([...(team1_ids.map(elm => elm.team_id)), ...(team2_ids.map(elm => elm.team_id))])];
         try {
           let teams = await Promise.all(
             teams_ids.map(async (elm) => {
               return await strapi.entityService.findOne(
                 "api::team.team",
-                elm.team_id,
+                elm,
                 {
                   fields: ["id", "name"],
                   populate: {
@@ -281,13 +281,13 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         team2_ids &&
         team2_ids.length > 0
       ) {
-        const teams_ids = [...new Set([...team1_ids, ...team2_ids])];
+        const teams_ids = [...new Set([...(team1_ids.map(elm => elm.team_id)), ...(team2_ids.map(elm => elm.team_id))])];
         try {
           let teams = await Promise.all(
             teams_ids.map(async (elm) => {
               return await strapi.entityService.findOne(
                 "api::team.team",
-                elm.team_id,
+                elm,
                 {
                   fields: ["id", "name"],
                   populate: {
