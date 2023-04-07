@@ -25,13 +25,13 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                                 logo: {
                                     fields: ["formats"],
                                 },
-                                players: {
-                                    populate: {
-                                        image: {
-                                            fields: ["formats"],
-                                        }
-                                    }
-                                }
+                                // players: {
+                                //     populate: {
+                                //         image: {
+                                //             fields: ["formats"],
+                                //         }
+                                //     }
+                                // }
                             },
                         },
                         team_2: {
@@ -40,17 +40,27 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                                 logo: {
                                     fields: ["formats"],
                                 },
-                                players: {
-                                    populate: {
-                                        image: {
-                                            fields: ["formats"],
-                                        }
-                                    }
-                                }
+                                // players: {
+                                //     populate: {
+                                //         image: {
+                                //             fields: ["formats"],
+                                //         }
+                                //     }
+                                // }
                             },
                         },
+                        team1_players: {
+                            fields: ["id", "name"],
+                            populate: { image: { fields: ["formats"] } }
+                        },
+                        team2_players: {
+                            fields: ["id", "name"],
+                            populate: { image: { fields: ["formats"] } }
+                        },
+
                     },
                 })
+                
                 const mappedMatch = {
                     state: match.state,
                     start_at: match.start_at,
@@ -62,7 +72,8 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                         name: match.team_1.name,
                         score: match.team1_score,
                         logo: match.team_1.logo?.formats.thumbnail.url,
-                        players: match.team_1.players.map((p) => {
+                        players: match.team1_players.map((p) => {
+                            
                             return {
                                 id: p.id,
                                 name: p.name,
@@ -91,7 +102,7 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                         name: match.team_2.name,
                         score: match.team2_score,
                         logo: match.team_2.logo?.formats.thumbnail.url,
-                        players: match.team_2.players.map((p) => {
+                        players: match.team2_players.map((p) => {
                             return {
                                 id: p.id,
                                 name: p.name,
