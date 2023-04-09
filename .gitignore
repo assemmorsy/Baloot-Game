@@ -109,7 +109,4 @@ exports
 dist
 build
 .strapi-updater.json
-.tmp
-src/extensions/documentation/documentation/1.0.0/full_documentation.json
-.tmp/data.db
 src/extensions/documentation/documentation/1.0.0/full_documentation.json

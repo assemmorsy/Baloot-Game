@@ -9,8 +9,18 @@ module.exports = {
     routes: [
         {
             method: "GET",
-            path: "/league/:id/players",
+            path: "/leagues/:id/players",
             handler: "league.findAllPlayersOfLeague",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
+            path: "/leagues/:id/teams",
+            handler: "league.findAllTeamsofLeague",
             config: {
                 auth: false,
                 policies: [],
@@ -19,7 +29,7 @@ module.exports = {
         }
         , {
             method: "GET",
-            path: "/league/:id/matches",
+            path: "/leagues/:id/matches",
             handler: "league.findAllMatchesOfLeague",
             config: {
                 auth: false,
@@ -29,7 +39,7 @@ module.exports = {
         },
         {
             method: "GET",
-            path: "/league/:id/referees",
+            path: "/leagues/:id/referees",
             handler: "league.findAllRefereesofLeague",
             config: {
                 auth: false,
@@ -40,7 +50,7 @@ module.exports = {
 
         {
             method: "GET",
-            path: "/league/:id/studios",
+            path: "/leagues/:id/studios",
             handler: "league.findAllStudiosofLeague",
             config: {
                 auth: false,
@@ -51,7 +61,7 @@ module.exports = {
 
         {
             method: "GET",
-            path: "/league/:id/summary",
+            path: "/leagues/:id/summary",
             handler: "league.summary",
             config: {
                 auth: false,
