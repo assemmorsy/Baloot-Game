@@ -11,11 +11,11 @@ module.exports = {
     },
 
     beforeUpdate(event) {
-        let data = event.params.data;
-        if (data.team_1 || data.team_2 || data.team_1 === data.team_2) {
+        // let data = event.params.data;
+        // if (data.team_1 || data.team_2 || data.team_1 === data.team_2) {
 
-            throw new ApplicationError("consider it a UI Error :D")
-        }
+        //     throw new ApplicationError("consider it a UI Error :D")
+        // }
 
         // this part is being handled in the amin panel 
         // using the deafult value = 0
