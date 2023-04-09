@@ -83,6 +83,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
       console.log(leagueId);
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ", leagueId.constructor.name);
         ctx.throw(404, "League Not Found");
       }
 
@@ -160,6 +161,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
       console.log(leagueId);
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ", leagueId.constructor.name);
         ctx.throw(404, "League Not Found");
       }
       let studiosIds = await strapi.db.connection.raw(`
@@ -216,6 +218,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       console.log(leagueId);
 
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ", leagueId.constructor.name);
         ctx.throw(404, "League Not Found");
       }
       const refereesIds = await strapi.db.connection.raw(`
@@ -340,6 +343,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
       console.log(leagueId);
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ", leagueId.constructor.name);
         ctx.throw(404, "League Not Found");
       }
 
