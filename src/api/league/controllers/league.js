@@ -1,5 +1,7 @@
 "use strict";
 
+const { log } = require("console");
+
 /**
  * league controller
  */
@@ -20,6 +22,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
       console.log(leagueId);
       if (!leagueId || isNaN(leagueId)) {
+        console.log("invalid id ================", leagueId.constructor.name);
         // Throw Error
         ctx.throw(404, "League Not Found");
       }
@@ -76,6 +79,9 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         }
       } else {
         // Throw Error
+        console.log("teams Ids has no length  ====================");
+        console.log(team1_ids);
+        console.log(team2_ids);
         ctx.throw(404, "League Not Found");
       }
     },
