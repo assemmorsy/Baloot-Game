@@ -17,15 +17,6 @@
       "pluginOptions": {},
       "required": true
     },
-    "type": {
-      "type": "enumeration",
-      "enum": [
-        "حكم طاولة",
-        "حكم مساعد (متابعة لعب)",
-        "حكم مساعد (متابعة نشرة)"
-      ],
-      "pluginOptions": {}
-    },
     "image": {
       "type": "media",
       "multiple": false,

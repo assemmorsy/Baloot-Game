@@ -176,6 +176,16 @@
       "min": 0,
       "max": 3,
       "default": 0
+    },
+    "team1_players": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::player.player"
+    },
+    "team2_players": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::player.player"
     }
   }
 }
