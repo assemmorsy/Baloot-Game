@@ -1,5 +1,7 @@
 "use strict";
 
+const { log } = require("console");
+
 /**
  * league controller
  */
@@ -18,26 +20,25 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
   return {
     async findAllTeamsofLeague(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
-
       if (!leagueId || isNaN(leagueId)) {
         // Throw Error
+        console.log("Invalid league Id");
         ctx.throw(404, "League Not Found");
       }
-      const team1_ids = await strapi.db.connection.raw(`
+      const team1_ids = (await strapi.db.connection.raw(`
                 select DISTINCT( mt1L.team_id )from matches 
                 Join  matches_team_1_links mt1L on mt1L.match_id = matches.id  
                 where matches.id in 
                 (SELECT match_id FROM matches_tournament_links MTourLink WHERE MTourLink.tournament_id in
                 (SELECT tournament_id from tournaments_league_links tm where tm.league_id = ${leagueId}));
-            `);
-      const team2_ids = await strapi.db.connection.raw(`
+            `))?.rows;
+      const team2_ids = (await strapi.db.connection.raw(`
                 select DISTINCT( mt2L.team_id )from matches 
                 Join  matches_team_2_links mt2L on mt2L.match_id = matches.id  
                 where matches.id in 
                 (SELECT match_id FROM matches_tournament_links MTourLink WHERE MTourLink.tournament_id in
                 (SELECT tournament_id from tournaments_league_links tm where tm.league_id = ${leagueId}));
-            `);
-
+            `))?.rows;
       if (
         team1_ids &&
         team1_ids.length > 0 &&
@@ -45,6 +46,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         team2_ids.length > 0
       ) {
         const teams_ids = [...new Set([...(team1_ids.map(elm => elm.team_id)), ...(team2_ids.map(elm => elm.team_id))])];
+        console.log(teams_ids);
         try {
           let teams = await Promise.all(
             teams_ids.map(async (elm) => {
@@ -76,16 +78,16 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         }
       } else {
         // Throw Error
-        ctx.throw(404, "League Not Found");
+        console.log("error league has no matches");
+        ctx.throw(404, "League has no Matches");
       }
     },
     async summary(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
-
-
       try {
         let tableObj = {};
 
@@ -158,12 +160,12 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     async findAllStudiosofLeague(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
-      let studiosIds = await strapi.db.connection.raw(`
+      let studiosIds = (await strapi.db.connection.raw(`
             SELECT studio_id as id FROM tournaments_studio_links WHERE tournament_id in
-            (SELECT tournament_id FROM tournaments_league_links WHERE league_id =${leagueId})`);
-
+            (SELECT tournament_id FROM tournaments_league_links WHERE league_id =${leagueId})`))?.rows;
       if (studiosIds && studiosIds.length > 0) {
         try {
           let studios = await Promise.all(
@@ -213,25 +215,26 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
 
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
-      const refereesIds = await strapi.db.connection.raw(`
+      const refereesIds = (await strapi.db.connection.raw(`
             SELECT referee_id as id FROM matches_referees_links 
             WHERE matches_referees_links.match_id in 
             (SELECT matches_tournament_links.match_id from matches_tournament_links 
             WHERE matches_tournament_links.tournament_id in
             (SELECT tournaments_league_links.tournament_id FROM tournaments_league_links 
-            WHERE tournaments_league_links.league_id = ${leagueId}))`);
-
+            WHERE tournaments_league_links.league_id = ${leagueId}))`))?.rows.map((elm) => elm.id);
+      // console.log(refereesIds);
       if (refereesIds && refereesIds.length > 0) {
         try {
           let referees = await Promise.all(
-            refereesIds.map(async (idMap) => {
+            refereesIds.map(async (id) => {
               return await strapi.entityService.findOne(
                 "api::referee.referee",
-                idMap.id,
+                id,
                 {
-                  fields: ["id", "name", "type"],
+                  fields: ["id", "name"],
                   populate: {
                     image: {
                       fields: ["formats"],
@@ -257,23 +260,23 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let leagueId = strapi.requestContext.get().params.id;
 
       if (!leagueId || isNaN(leagueId)) {
-        // Throw Error
+        console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
-      const team1_ids = await strapi.db.connection.raw(`
+      const team1_ids = (await strapi.db.connection.raw(`
                 select DISTINCT( mt1L.team_id )from matches 
                 Join  matches_team_1_links mt1L on mt1L.match_id = matches.id  
                 where matches.id in 
                 (SELECT match_id FROM matches_tournament_links MTourLink WHERE MTourLink.tournament_id in
                 (SELECT tournament_id from tournaments_league_links tm where tm.league_id = ${leagueId}));
-            `);
-      const team2_ids = await strapi.db.connection.raw(`
+            `))?.rows;
+      const team2_ids = (await strapi.db.connection.raw(`
                 select DISTINCT( mt2L.team_id )from matches 
                 Join  matches_team_2_links mt2L on mt2L.match_id = matches.id  
                 where matches.id in 
                 (SELECT match_id FROM matches_tournament_links MTourLink WHERE MTourLink.tournament_id in
                 (SELECT tournament_id from tournaments_league_links tm where tm.league_id = ${leagueId}));
-            `);
+            `))?.rows;
 
       if (
         team1_ids &&
@@ -335,12 +338,13 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     async findAllMatchesOfLeague(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
       if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
 
-      const matchesIds = await strapi.db.connection.raw(`
+      const matchesIds = (await strapi.db.connection.raw(`
                 SELECT match_id  from matches_tournament_links where  tournament_id in 
-                    (SELECT tournament_id from tournaments_league_links WHERE league_id = ${leagueId});`);
+                    (SELECT tournament_id from tournaments_league_links WHERE league_id = ${leagueId});`))?.rows;
 
       if (matchesIds && matchesIds.length > 0) {
         try {
