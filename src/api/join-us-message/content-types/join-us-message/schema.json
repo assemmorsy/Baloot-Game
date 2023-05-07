@@ -1,14 +1,14 @@
 {
   "kind": "collectionType",
-  "collectionName": "messages",
+  "collectionName": "join_us_messages",
   "info": {
-    "singularName": "message",
-    "pluralName": "messages",
-    "displayName": "رسائل اوساسيونا",
+    "singularName": "join-us-message",
+    "pluralName": "join-us-messages",
+    "displayName": "رسائل انضم لنا من اوساسيونا",
     "description": ""
   },
   "options": {
-    "draftAndPublish": false
+    "draftAndPublish": true
   },
   "pluginOptions": {},
   "attributes": {
@@ -21,12 +21,12 @@
       "required": true
     },
     "message": {
-      "type": "text",
+      "type": "string",
       "required": true
     },
-    "sentAt": {
-      "type": "datetime",
-      "required": true
+    "date": {
+      "required": true,
+      "type": "datetime"
     }
   }
 }
