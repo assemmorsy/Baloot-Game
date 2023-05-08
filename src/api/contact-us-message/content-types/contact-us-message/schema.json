@@ -13,7 +13,7 @@
   "pluginOptions": {},
   "attributes": {
     "message": {
-      "type": "string",
+      "type": "text",
       "required": true
     },
     "email": {
