@@ -195,13 +195,13 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     async statistics(ctx) {
       let league = await this.findLeague(ctx)
       let data = await strapi.db.connection.raw(`
-      select name , 
-      sum(score) as score ,
-      sum(akak) as akak, sum(akalat) as akalat , sum(moshtary_sun) as moshtary_sun ,
-      sum(moshtary_hakam) as moshtary_hakam, sum(moshtrayat_nagha) as moshtrayat_nagha , sum(moshtrayat_khasera) as moshtrayat_khasera,
-      sum(sra) as sra, sum(baloot) as baloot , sum(khamsin) as khamsin ,
-      sum("100") as "100" , sum("400") as "400" , sum(kababit_sun_count) as kababit_sun_count ,
-      sum(kababit_hakam_count) as kababit_hakam_count, sum(abnat) as abnat 	
+      select name as "1 الاسم" , 
+      sum(score) as "2 النقاط" , sum(abnat) as "3 الابناط" ,
+      sum(akak) as "4 الاكك", sum(akalat) as "5 الأكلات" , sum(moshtary_sun) as "6 مشترى صن" ,
+      sum(moshtary_hakam) as "7 مشترى حكم", sum(moshtrayat_nagha) as "8 مشتريات ناجحة" , sum(moshtrayat_khasera) as "9 مشتريات خسرانة",
+      sum(sra) as "10 سرا", sum(baloot) as "11 بلوت" , sum(khamsin) as "12 خمسين" ,
+      sum("100") as "13 مية" , sum("400") as "14 أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن 15" ,
+      sum(kababit_hakam_count) as "16 عدد الكبابيت حكم"
     from (
       SELECT t.name, sum(team_2_score) as score ,
         sum(team_2_akak) as akak, sum(team_2_akalat) as akalat , sum(team_2_moshtary_sun) as moshtary_sun ,
