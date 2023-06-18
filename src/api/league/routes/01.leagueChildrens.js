@@ -64,5 +64,14 @@ module.exports = {
                 policies: [],
             },
         },
+        {
+            method: "GET",
+            path: "/leagues/:id/statistics",
+            handler: "league.statistics",
+            config: {
+                auth: false,
+                policies: [],
+            },
+        },
     ]
 }

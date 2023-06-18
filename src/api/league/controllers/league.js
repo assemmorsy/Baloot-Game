@@ -192,5 +192,47 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       }
       return { ...leagueDate.rows[0] }
     },
+    async statistics(ctx) {
+      let league = await this.findLeague(ctx)
+      let data = await strapi.db.connection.raw(`
+      select name , 
+      sum(score) as score ,
+      sum(akak) as akak, sum(akalat) as akalat , sum(moshtary_sun) as moshtary_sun ,
+      sum(moshtary_hakam) as moshtary_hakam, sum(moshtrayat_nagha) as moshtrayat_nagha , sum(moshtrayat_khasera) as moshtrayat_khasera,
+      sum(sra) as sra, sum(baloot) as baloot , sum(khamsin) as khamsin ,
+      sum("100") as "100" , sum("400") as "400" , sum(kababit_sun_count) as kababit_sun_count ,
+      sum(kababit_hakam_count) as kababit_hakam_count, sum(abnat) as abnat 	
+    from (
+      SELECT t.name, sum(team_2_score) as score ,
+        sum(team_2_akak) as akak, sum(team_2_akalat) as akalat , sum(team_2_moshtary_sun) as moshtary_sun ,
+        sum(team_2_moshtary_hakam) as moshtary_hakam, sum(team_2_moshtrayat_nagha) as moshtrayat_nagha , sum(team_2_moshtrayat_khasera) as moshtrayat_khasera,
+        sum(team_2_sra) as sra, sum(team_2_baloot) as baloot , sum(team_2_khamsin) as khamsin ,
+        sum(team_2_100) as "100" , sum(team_2_400) as "400" , sum(team_2_kababit_sun_count) as kababit_sun_count ,
+        sum(team_2_kababit_hakam_count) as kababit_hakam_count, sum(team_2_abnat) as abnat 
+      FROM public.matches m  
+        join public.matches_team_2_links mt2l on mt2l.match_id = m.id
+        join public.teams t on t.id = mt2l.team_id
+      group by (t.name)
+      
+      union
+      
+      SELECT  t.name, sum(team_1_score) as score ,
+        sum(team_1_akak) as akak, sum(team_1_akalat) as akalat , sum(team_1_moshtary_sun) as moshtary_sun ,
+        sum(team_1_moshtary_hakam) as moshtary_hakam, sum(team_1_moshtrayat_nagha) as moshtrayat_nagha , sum(team_1_moshtrayat_khasera) as moshtrayat_khasera,
+        sum(team_1_sra) as sra, sum(team_1_baloot) as baloot , sum(team_1_khamsin) as khamsin ,
+        sum(team_1_100) as "100" , sum(team_1_400) as "400" , sum(team_1_kababit_sun_count) as kababit_sun_count ,
+        sum(team_1_kababit_hakam_count) as kababit_hakam_count, sum(team_1_abnat) as abnat 
+      FROM public.matches m  
+        join public.matches_team_1_links mt1l on mt1l.match_id = m.id
+        join public.teams t on t.id = mt1l.team_id
+      group by (t.name)
+    ) as nt group by nt.name ;`)
+      if (data.rows.length === 0) {
+        ctx.throw(404, "League or Table Not Found");
+      } else {
+        let res = { data: data.rows }
+        return res
+      }
+    }
   };
 });

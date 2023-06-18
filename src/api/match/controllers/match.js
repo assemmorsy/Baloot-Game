@@ -8,6 +8,7 @@ const { createCoreController } = require('@strapi/strapi').factories;
 
 module.exports = createCoreController('api::match.match', ({ strapi }) => {
     return {
+
         async findOne(ctx) {
             let matchId = strapi.requestContext.get().params.id;
             if (!matchId || isNaN(matchId)) {
