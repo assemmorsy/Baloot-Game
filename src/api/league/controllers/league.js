@@ -196,14 +196,16 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       let league = await this.findLeague(ctx)
       let data = await strapi.db.connection.raw(`
       select name as "1 الاسم" , 
-      sum(score) as "2 النقاط" , sum(abnat) as "3 الابناط" ,
-      sum(akak) as "4 الاكك", sum(akalat) as "5 الأكلات" , sum(moshtary_sun) as "6 مشترى صن" ,
-      sum(moshtary_hakam) as "7 مشترى حكم", sum(moshtrayat_nagha) as "8 مشتريات ناجحة" , sum(moshtrayat_khasera) as "9 مشتريات خسرانة",
-      sum(sra) as "10 سرا", sum(baloot) as "11 بلوت" , sum(khamsin) as "12 خمسين" ,
-      sum("100") as "13 مية" , sum("400") as "14 أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن 15" ,
-      sum(kababit_hakam_count) as "16 عدد الكبابيت حكم"
+  	  sum(skaat_played) as "عدد الصكات الملعوبة 2" , 
+      sum(skaat_winned) as "3 عدد الصكات المربوحة" ,sum(skaat_played) - sum(skaat_winned) as "4 عدد الصكات الخاسرة" , 
+	  sum(abnat) as "5 الابناط" ,
+      sum(akak) as "6 الاكك", sum(akalat) as "7 الأكلات" , sum(moshtary_sun) as "8 مشترى صن" ,
+      sum(moshtary_hakam) as "9 مشترى حكم", sum(moshtrayat_nagha) as "10 مشتريات ناجحة" , sum(moshtrayat_khasera) as "11 مشتريات خسرانة",
+      sum(sra) as "12 سرا", sum(baloot) as "13 بلوت" , sum(khamsin) as "14 خمسين" ,
+      sum("100") as "15 مية" , sum("400") as "16 أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن 17" ,
+      sum(kababit_hakam_count) as "18 عدد الكبابيت حكم"
     from (
-      SELECT t.name, sum(team_2_score) as score ,
+      SELECT t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_2_score) as skaat_winned ,
         sum(team_2_akak) as akak, sum(team_2_akalat) as akalat , sum(team_2_moshtary_sun) as moshtary_sun ,
         sum(team_2_moshtary_hakam) as moshtary_hakam, sum(team_2_moshtrayat_nagha) as moshtrayat_nagha , sum(team_2_moshtrayat_khasera) as moshtrayat_khasera,
         sum(team_2_sra) as sra, sum(team_2_baloot) as baloot , sum(team_2_khamsin) as khamsin ,
@@ -216,7 +218,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       
       union
       
-      SELECT  t.name, sum(team_1_score) as score ,
+      SELECT  t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_1_score) as skaat_winned ,
         sum(team_1_akak) as akak, sum(team_1_akalat) as akalat , sum(team_1_moshtary_sun) as moshtary_sun ,
         sum(team_1_moshtary_hakam) as moshtary_hakam, sum(team_1_moshtrayat_nagha) as moshtrayat_nagha , sum(team_1_moshtrayat_khasera) as moshtrayat_khasera,
         sum(team_1_sra) as sra, sum(team_1_baloot) as baloot , sum(team_1_khamsin) as khamsin ,
@@ -226,7 +228,8 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         join public.matches_team_1_links mt1l on mt1l.match_id = m.id
         join public.teams t on t.id = mt1l.team_id
       group by (t.name)
-    ) as nt group by nt.name ;`)
+    ) as nt group by nt.name ;
+      `)
       if (data.rows.length === 0) {
         ctx.throw(404, "League or Table Not Found");
       } else {
