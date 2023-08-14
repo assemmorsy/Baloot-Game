@@ -19,6 +19,11 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                     populate: {
                         tournament: {
                             fields: ["id", "name"],
+                            populate: {
+                                league: {
+                                    fields: ["name"]
+                                },
+                            }
                         },
                         team_1: {
                             fields: ["id", "name"],
@@ -67,6 +72,7 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                 })
 
                 const mappedMatch = {
+                    leagueName: match.tournament.league.name,
                     state: match.state,
                     start_at: match.start_at,
                     url: match.url,

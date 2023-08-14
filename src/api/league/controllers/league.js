@@ -2,7 +2,54 @@
 const { createCoreController } = require("@strapi/strapi").factories;
 
 module.exports = createCoreController("api::league.league", ({ strapi }) => {
+  const Champ_Types = ["league", "super", "cup"]
   return {
+    async findOne(ctx) {
+      let leagueId = strapi.requestContext.get().params.id;
+      if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
+        ctx.throw(404, "League Not Found");
+      }
+      let leagueDate = await strapi.db.connection.raw(`
+      select l.id as leagueId, l.name  , l.start_at , l.end_at  , 
+      l.description , l.type , l.state , t.name as winner_name , 
+      fl.formats -> 'thumbnail' ->> 'url' as league_logo,
+      ft.formats -> 'thumbnail' ->> 'url' as winner_logo,
+      l.laws  from leagues l 
+      left join leagues_champion_links lcl on lcl.league_id = l.id 
+	  inner join files_related_morphs frml on frml.related_id = l.id
+      inner join files fl on frml.file_id = fl.id
+      left join teams t on t.id = lcl.team_id
+	  left join files_related_morphs frmt on frmt.related_id = t.id
+      left join files ft on frmt.file_id = ft.id
+      where l.id = ${leagueId} and frml.related_type = 'api::league.league'  and ( frmt.related_type = 'api::team.team' or t.id is null  ); 
+      `)
+      if (leagueDate.rows.length === 0) {
+        console.log("from in valid ID from sql query");
+        ctx.throw(404, "League Not Found");
+      }
+      return { ...leagueDate.rows[0] }
+    },
+    async find(ctx) {
+      const champType = strapi.requestContext.get().query.type;
+      let leagueDate = await strapi.db.connection.raw(`
+      select l.id as leagueId, l.name  , l.start_at , l.end_at  , 
+      l.description , l.type , l.state , t.name as winner_name , 
+      fl.formats -> 'thumbnail' ->> 'url' as league_logo,
+      ft.formats -> 'thumbnail' ->> 'url' as winner_logo,
+      l.laws  from leagues l 
+      left join leagues_champion_links lcl on lcl.league_id = l.id 
+      inner join files_related_morphs frml on frml.related_id = l.id
+      inner join files fl on frml.file_id = fl.id
+      left join teams t on t.id = lcl.team_id
+      left join files_related_morphs frmt on frmt.related_id = t.id
+      left join files ft on frmt.file_id = ft.id
+      where ${Champ_Types.includes(champType) ? `l.type = '${champType}' and` : ''}
+       frml.related_type = 'api::league.league'  and ( frmt.related_type = 'api::team.team' or t.id is null)
+      order by l.end_at desc , l.start_at asc
+      `)
+      return { champs: [...leagueDate.rows] }
+    },
     async summary(ctx) {
       let league = await this.findLeague(ctx)
       let data = await strapi.db.connection.raw(`
@@ -29,7 +76,7 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         inner join tournaments t on ttl.tournament_id = t.id
         inner join tournaments_studio_links tsl on tsl.tournament_id = t.id
         inner join studios s on  s.id = tsl.studio_id
-        inner join analysts_studio_links asl on asl.studio_id = s.id
+        inner join analysts_studios_links asl on asl.studio_id = s.id
         inner join analysts a on a.id = asl.analyst_id
         where l.id = ${league.id}
         order by s.start_at;
@@ -194,41 +241,54 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     },
     async statistics(ctx) {
       let league = await this.findLeague(ctx)
+      let leagueId = strapi.requestContext.get().params.id;
+
       let data = await strapi.db.connection.raw(`
-      select name as "1 الاسم" , 
-  	  sum(skaat_played) as "عدد الصكات الملعوبة 2" , 
-      sum(skaat_winned) as "3 عدد الصكات المربوحة" ,sum(skaat_played) - sum(skaat_winned) as "4 عدد الصكات الخاسرة" , 
-	  sum(abnat) as "5 الابناط" ,
-      sum(akak) as "6 الاكك", sum(akalat) as "7 الأكلات" , sum(moshtary_sun) as "8 مشترى صن" ,
-      sum(moshtary_hakam) as "9 مشترى حكم", sum(moshtrayat_nagha) as "10 مشتريات ناجحة" , sum(moshtrayat_khasera) as "11 مشتريات خسرانة",
-      sum(sra) as "12 سرا", sum(baloot) as "13 بلوت" , sum(khamsin) as "14 خمسين" ,
-      sum("100") as "15 مية" , sum("400") as "16 أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن 17" ,
-      sum(kababit_hakam_count) as "18 عدد الكبابيت حكم"
-    from (
-      SELECT t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_2_score) as skaat_winned ,
+      select name as "الاسم" , 
+  	  sum(skaat_played) as "عدد الصكات الملعوبة" , 
+      sum(skaat_winned) as "عدد الصكات المربوحة" ,
+      sum(skaat_played) - sum(skaat_winned) as "عدد الصكات الخاسرة" , sum(abnat) as "الابناط" ,
+      sum(akak) as "الاكك", sum(akalat) as "الأكلات" , sum(moshtary_sun) as "مشترى صن" ,
+      sum(moshtary_hakam) as "مشترى حكم", sum(moshtrayat_nagha) as "مشتريات ناجحة" ,
+      sum(moshtrayat_khasera) as "مشتريات خسرانة",
+      sum(sra) as "سرا", sum(baloot) as "بلوت" , sum(khamsin) as "خمسين" ,
+      sum("100") as "مية" , sum("400") as "أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن" ,
+      sum(kababit_hakam_count) as "عدد الكبابيت حكم"
+      from (
+        SELECT t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_2_score) as skaat_winned ,
         sum(team_2_akak) as akak, sum(team_2_akalat) as akalat , sum(team_2_moshtary_sun) as moshtary_sun ,
         sum(team_2_moshtary_hakam) as moshtary_hakam, sum(team_2_moshtrayat_nagha) as moshtrayat_nagha , sum(team_2_moshtrayat_khasera) as moshtrayat_khasera,
         sum(team_2_sra) as sra, sum(team_2_baloot) as baloot , sum(team_2_khamsin) as khamsin ,
         sum(team_2_100) as "100" , sum(team_2_400) as "400" , sum(team_2_kababit_sun_count) as kababit_sun_count ,
         sum(team_2_kababit_hakam_count) as kababit_hakam_count, sum(team_2_abnat) as abnat 
-      FROM public.matches m  
-        join public.matches_team_2_links mt2l on mt2l.match_id = m.id
+        FROM public.matches m  
+	  	  join public.matches_team_2_links mt2l on mt2l.match_id = m.id
+		    join matches_tournament_links mtl on mtl.match_id = m.id
+        join tournaments tourn on mtl.tournament_id = tourn.id
+        join tournaments_league_links ttl on ttl.tournament_id = tourn.id
+        join leagues l on l.id = ttl.league_id
         join public.teams t on t.id = mt2l.team_id
-      group by (t.name)
+        where l.id = ${leagueId}
+          group by (t.name)
       
-      union
+        union
       
-      SELECT  t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_1_score) as skaat_winned ,
+        SELECT  t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_1_score) as skaat_winned ,
         sum(team_1_akak) as akak, sum(team_1_akalat) as akalat , sum(team_1_moshtary_sun) as moshtary_sun ,
         sum(team_1_moshtary_hakam) as moshtary_hakam, sum(team_1_moshtrayat_nagha) as moshtrayat_nagha , sum(team_1_moshtrayat_khasera) as moshtrayat_khasera,
         sum(team_1_sra) as sra, sum(team_1_baloot) as baloot , sum(team_1_khamsin) as khamsin ,
         sum(team_1_100) as "100" , sum(team_1_400) as "400" , sum(team_1_kababit_sun_count) as kababit_sun_count ,
         sum(team_1_kababit_hakam_count) as kababit_hakam_count, sum(team_1_abnat) as abnat 
-      FROM public.matches m  
+        FROM public.matches m  
         join public.matches_team_1_links mt1l on mt1l.match_id = m.id
+        join matches_tournament_links mtl on mtl.match_id = m.id
+        join tournaments tourn on mtl.tournament_id = tourn.id
+        join tournaments_league_links ttl on ttl.tournament_id = tourn.id
+        join leagues l on l.id = ttl.league_id
         join public.teams t on t.id = mt1l.team_id
-      group by (t.name)
-    ) as nt group by nt.name ;
+        where l.id = ${leagueId}
+          group by (t.name)
+        )as nt group by nt.name ;
       `)
       if (data.rows.length === 0) {
         ctx.throw(404, "League or Table Not Found");

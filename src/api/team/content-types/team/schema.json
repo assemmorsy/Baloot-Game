@@ -29,6 +29,12 @@
       "allowedTypes": [
         "images"
       ]
+    },
+    "winnerAt": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::league.league",
+      "mappedBy": "champion"
     }
   }
 }

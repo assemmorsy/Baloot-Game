@@ -24,9 +24,9 @@
         "images"
       ]
     },
-    "studio": {
+    "studios": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::studio.studio",
       "inversedBy": "analysts"
     }

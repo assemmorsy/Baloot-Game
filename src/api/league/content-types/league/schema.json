@@ -4,7 +4,7 @@
   "info": {
     "singularName": "league",
     "pluralName": "leagues",
-    "displayName": "الدوري",
+    "displayName": "البطولة",
     "description": ""
   },
   "options": {
@@ -35,6 +35,44 @@
       "relation": "oneToOne",
       "target": "api::league-table.league-table",
       "mappedBy": "league"
+    },
+    "laws": {
+      "type": "richtext"
+    },
+    "startAt": {
+      "type": "date"
+    },
+    "endAt": {
+      "type": "date"
+    },
+    "description": {
+      "type": "text"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "league",
+        "cup",
+        "super"
+      ],
+      "required": true,
+      "default": "league"
+    },
+    "state": {
+      "type": "enumeration",
+      "enum": [
+        "upcoming",
+        "live",
+        "done"
+      ],
+      "default": "upcoming",
+      "required": true
+    },
+    "champion": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "winnerAt"
     }
   }
 }
