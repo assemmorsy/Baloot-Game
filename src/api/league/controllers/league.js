@@ -39,13 +39,13 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       ft.formats -> 'thumbnail' ->> 'url' as winner_logo,
       l.laws  from leagues l 
       left join leagues_champion_links lcl on lcl.league_id = l.id 
-      inner join files_related_morphs frml on frml.related_id = l.id
-      inner join files fl on frml.file_id = fl.id
+      left join files_related_morphs frml on frml.related_id = l.id
+      left join files fl on frml.file_id = fl.id
       left join teams t on t.id = lcl.team_id
       left join files_related_morphs frmt on frmt.related_id = t.id
       left join files ft on frmt.file_id = ft.id
       where ${Champ_Types.includes(champType) ? `l.type = '${champType}' and` : ''}
-       frml.related_type = 'api::league.league'  and ( frmt.related_type = 'api::team.team' or t.id is null)
+       frml.related_type = 'api::league.league' and published_at is not null  and ( frmt.related_type = 'api::team.team' or t.id is null)
       order by l.end_at desc , l.start_at asc
       `)
       return { champs: [...leagueDate.rows] }
@@ -123,10 +123,10 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     },
     async findAllTeamsOfLeague(ctx) {
       let leaguePlayers = await this.findAllPlayersOfLeague(ctx);
-      let teams = {}
+      let teamsObj = {}
       leaguePlayers.players.forEach((player) => {
-        if (!Object.hasOwnProperty.call(teams, player.team_id)) {
-          teams[player.team_id] = {
+        if (!Object.hasOwnProperty.call(teamsObj, player.team_id)) {
+          teamsObj[player.team_id] = {
             name: player.team_name,
             id: player.team_id,
             logo: player.team_logo,
@@ -134,14 +134,14 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           }
         }
         if (player.player_order === 1) {
-          teams[player.team_id].players.unshift({
+          teamsObj[player.team_id].players.unshift({
             id: player.player_id,
             name: player.name,
             image: player.player_img,
             is_captain: true
           })
         } else {
-          teams[player.team_id].players.push({
+          teamsObj[player.team_id].players.push({
             id: player.player_id,
             name: player.name,
             image: player.player_img,
@@ -150,6 +150,10 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         }
 
       })
+      let teams = []
+      for (const key in teamsObj) {
+        teams.push(teamsObj[key]);
+      }
       let res = { ...leaguePlayers, teams: teams }
       delete res.players;
       return res
@@ -290,12 +294,9 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
           group by (t.name)
         )as nt group by nt.name ;
       `)
-      if (data.rows.length === 0) {
-        ctx.throw(404, "League or Table Not Found");
-      } else {
-        let res = { data: data.rows }
-        return res
-      }
+      let res = { data: data.rows }
+      return res
+
     }
   };
 });
