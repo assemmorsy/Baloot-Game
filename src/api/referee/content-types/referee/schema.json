@@ -28,6 +28,10 @@
         "audios"
       ],
       "pluginOptions": {}
+    },
+    "start_refereeing_at": {
+      "type": "date",
+      "required": true
     }
   }
 }
