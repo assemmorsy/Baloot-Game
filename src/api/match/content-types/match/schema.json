@@ -30,11 +30,11 @@
       "type": "datetime",
       "required": true
     },
-    "tournament": {
+    "albtwlt": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::tournament.tournament",
-      "inversedBy": "matches"
+      "target": "api::league.league",
+      "inversedBy": "almbarats"
     },
     "team_1": {
       "type": "relation",
@@ -186,6 +186,19 @@
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::player.player"
+    },
+    "tournment_name": {
+      "type": "string",
+      "required": false
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "official",
+        "friendly"
+      ],
+      "default": "official",
+      "required": true
     }
   }
 }

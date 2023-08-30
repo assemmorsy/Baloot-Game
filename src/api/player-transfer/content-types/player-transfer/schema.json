@@ -1,0 +1,38 @@
+{
+  "kind": "collectionType",
+  "collectionName": "player_transfers",
+  "info": {
+    "singularName": "player-transfer",
+    "pluralName": "player-transfers",
+    "displayName": "انتقالات اللاعبين",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "transfered_at": {
+      "type": "date",
+      "required": true
+    },
+    "player": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::player.player",
+      "inversedBy": "player_transfers"
+    },
+    "from_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "going_players"
+    },
+    "to_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "coming_players"
+    }
+  }
+}

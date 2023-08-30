@@ -9,6 +9,36 @@ module.exports = {
     routes: [
         {
             method: "GET",
+            path: "/leagues/get",
+            handler: "league.get",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
+            path: "/leagues/getById/:id",
+            handler: "league.getById",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
+            path: "/leagues/upcoming",
+            handler: "league.upcoming",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
             path: "/leagues/:id/players",
             handler: "league.findAllPlayersOfLeague",
             config: {

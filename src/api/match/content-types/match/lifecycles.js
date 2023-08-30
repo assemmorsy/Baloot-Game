@@ -10,13 +10,13 @@ function orderTeams(team1, team2) {
 
 async function generateLeagueTable(matchId) {
     let leagues = await strapi.db.connection.raw(`
-    select league_id
-    from matches_tournament_links mtl 
-    inner join public.tournaments_league_links tll on tll.tournament_id = mtl.tournament_id
-    where mtl.match_id = ${matchId}; 
+        select mll.league_id 
+        from public.matches_albtwlt_links mll
+        join leagues  l on l.id = mll.league_id
+        where mll.match_id = ${matchId} and l.published_at is not null and l.type = 'league'
     `)
 
-    if (leagues.rows.length === 0) {
+    if (leagues.rows.length != 1) {
         // match not belong to a league
         return;
     }
@@ -39,23 +39,19 @@ async function generateLeagueTable(matchId) {
     let teamsData = await strapi.db.connection.raw(`
     select t.id ,  t.name
     from leagues l 
-    inner join tournaments_league_links ttl on ttl.league_id = l.id
-    inner join tournaments tourn on ttl.tournament_id = tourn.id
-    inner join matches_tournament_links mtl on mtl.tournament_id = tourn.id
-    inner join matches m on  m.id = mtl.match_id
+    inner join matches_albtwlt_links mll on mll.league_id = l.id
+    inner join matches m on  m.id = mll.match_id
     inner join matches_team_1_links mt1l on m.id = mt1l.match_id
     inner join teams t on t.id = mt1l.team_id
-    where l.id = ${leagueId} 
+    where l.id = ${leagueId}
     union 
     select t.id ,  t.name
     from leagues l 
-    inner join tournaments_league_links ttl on ttl.league_id = l.id
-    inner join tournaments tourn on ttl.tournament_id = tourn.id
-    inner join matches_tournament_links mtl on mtl.tournament_id = tourn.id
-    inner join matches m on  m.id = mtl.match_id
+    inner join matches_albtwlt_links mll on mll.league_id = l.id
+    inner join matches m on  m.id = mll.match_id
     inner join matches_team_2_links mt2l on m.id = mt2l.match_id
     inner join teams t on t.id = mt2l.team_id
-    where l.id = ${leagueId} ;
+    where l.id =  ${leagueId} ;
 `)
 
     let tableObj = {};
@@ -74,17 +70,16 @@ async function generateLeagueTable(matchId) {
     });
 
     let matchesData = await strapi.db.connection.raw(`
-    select t1.id as team_1_id,t1.name as team_1_name,m.team_1_score,m.team_1_abnat ,t2.id as team_2_id,t2.name as team_2_name,m.team_2_score,m.team_2_abnat ,m.number_of_rounds
+    select t1.id as team_1_id,t1.name as team_1_name,m.team_1_score,m.team_1_abnat 
+        ,t2.id as team_2_id,t2.name as team_2_name,m.team_2_score,m.team_2_abnat ,m.number_of_rounds
     from leagues l 
-    inner join tournaments_league_links ttl on ttl.league_id = l.id
-    inner join tournaments t on ttl.tournament_id = t.id
-    inner join matches_tournament_links mtl on mtl.tournament_id = t.id
-    inner join matches m on m.id = mtl.match_id
+    inner join matches_albtwlt_links mll on mll.league_id = l.id
+    inner join matches m on  m.id = mll.match_id
     inner join matches_team_1_links mt1l on m.id = mt1l.match_id
     inner join matches_team_2_links mt2l on m.id = mt2l.match_id
     inner join teams t1 on t1.id = mt1l.team_id
     inner join teams t2 on t2.id = mt2l.team_id
-    where l.id = 1 and m.state= 'انتهت';
+    where l.id = ${leagueId} and m.state= 'انتهت';
 `)
 
     let matches = matchesData.rows;
@@ -134,7 +129,7 @@ module.exports = {
     beforeCreate(event) {
 
         let data = event.params.data;
-
+        if (data.type !== "official") return;
         if (data.team_1.connect.length == 0 || data.team_2.connect.length == 0) {
 
             throw new ApplicationError("You Must Enter Two Teams")
@@ -148,6 +143,7 @@ module.exports = {
     async beforeUpdate(event) {
         let params = event.params;
         let matchId = params.where.id;
+        if (event.params.data.type !== "official") return;
 
         let match = await strapi.entityService.findOne("api::match.match", matchId, {
             populate: {

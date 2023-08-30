@@ -31,6 +31,18 @@
       "relation": "manyToOne",
       "target": "api::team.team",
       "inversedBy": "players"
+    },
+    "player_transfers": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::player-transfer.player-transfer",
+      "mappedBy": "player"
+    },
+    "twitter_link": {
+      "type": "string"
+    },
+    "snap_link": {
+      "type": "string"
     }
   }
 }

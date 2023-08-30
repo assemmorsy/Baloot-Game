@@ -19,6 +19,7 @@ module.exports = createCoreController('api::referee.referee', ({ strapi }) => {
                 join files fr on frmr.file_id = fr.id
                 where frmr.related_type = 'api::referee.referee' 
                 group by (r.id , r.name , r.start_refereeing_at , fr.formats)
+                order by refereed_matches_count desc , r.start_refereeing_at asc
                 `)
                 return { referees: [...refereesData.rows] }
             } catch (error) {

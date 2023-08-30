@@ -4,7 +4,7 @@
   "info": {
     "singularName": "contact-us-message",
     "pluralName": "contact-us-messages",
-    "displayName": "رسائل تواصل معنا من موقع سام",
+    "displayName": "رسائل موقع سام",
     "description": ""
   },
   "options": {
@@ -26,6 +26,15 @@
     },
     "date": {
       "type": "datetime",
+      "required": true
+    },
+    "type": {
+      "type": "string",
+      "required": true
+    },
+    "handled": {
+      "type": "boolean",
+      "default": false,
       "required": true
     }
   }

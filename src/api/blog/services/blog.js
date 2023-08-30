@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * tournament service
+ * blog service
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::tournament.tournament');
+module.exports = createCoreService('api::blog.blog');

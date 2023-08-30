@@ -24,12 +24,6 @@
         "images"
       ]
     },
-    "tournments": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::tournament.tournament",
-      "mappedBy": "league"
-    },
     "league_table": {
       "type": "relation",
       "relation": "oneToOne",
@@ -73,6 +67,25 @@
       "relation": "manyToOne",
       "target": "api::team.team",
       "inversedBy": "winnerAt"
+    },
+    "ad_image": {
+      "allowedTypes": [
+        "images"
+      ],
+      "type": "media",
+      "multiple": false
+    },
+    "almbarats": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match.match",
+      "mappedBy": "albtwlt"
+    },
+    "astwdyws": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::studio.studio",
+      "mappedBy": "albtwlt"
     }
   }
 }

@@ -19,12 +19,6 @@
       "type": "string",
       "required": true
     },
-    "tournament": {
-      "type": "relation",
-      "relation": "oneToOne",
-      "target": "api::tournament.tournament",
-      "mappedBy": "studio"
-    },
     "url": {
       "type": "string",
       "regex": "[-a-zA-Z0-9@:%_\\+.~#?&//=]{2,256}\\.[a-z]{2,4}\\b(\\/[-a-zA-Z0-9@:%_\\+.~#?&//=]*)?"
@@ -34,6 +28,16 @@
       "relation": "manyToMany",
       "target": "api::analyst.analyst",
       "mappedBy": "studios"
+    },
+    "albtwlt": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::league.league",
+      "inversedBy": "astwdyws"
+    },
+    "tournment_name": {
+      "type": "string",
+      "required": true
     }
   }
 }

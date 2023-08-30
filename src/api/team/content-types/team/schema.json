@@ -35,6 +35,22 @@
       "relation": "oneToMany",
       "target": "api::league.league",
       "mappedBy": "champion"
+    },
+    "going_players": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::player-transfer.player-transfer",
+      "mappedBy": "from_team"
+    },
+    "coming_players": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::player-transfer.player-transfer",
+      "mappedBy": "to_team"
+    },
+    "founded_in": {
+      "type": "date",
+      "required": true
     }
   }
 }
