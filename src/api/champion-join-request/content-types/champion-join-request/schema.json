@@ -1,0 +1,59 @@
+{
+  "kind": "collectionType",
+  "collectionName": "champion_join_requests",
+  "info": {
+    "singularName": "champion-join-request",
+    "pluralName": "champion-join-requests",
+    "displayName": "طلبات الانضمام للبطولات",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "email": {
+      "type": "email"
+    },
+    "teamName": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string",
+      "regex": "/^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$/im"
+    },
+    "fpName": {
+      "type": "string"
+    },
+    "fpCity": {
+      "type": "string"
+    },
+    "fpAge": {
+      "type": "string"
+    },
+    "fpExperience": {
+      "type": "decimal"
+    },
+    "spName": {
+      "type": "string"
+    },
+    "spCity": {
+      "type": "string"
+    },
+    "spAge": {
+      "type": "string"
+    },
+    "spExperience": {
+      "type": "decimal"
+    },
+    "IsPlayedBefore": {
+      "type": "string"
+    },
+    "champ": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::league.league",
+      "inversedBy": "requests"
+    }
+  }
+}

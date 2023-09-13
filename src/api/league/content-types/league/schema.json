@@ -69,11 +69,12 @@
       "inversedBy": "winnerAt"
     },
     "ad_image": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
       "allowedTypes": [
         "images"
-      ],
-      "type": "media",
-      "multiple": false
+      ]
     },
     "almbarats": {
       "type": "relation",
@@ -86,6 +87,17 @@
       "relation": "oneToMany",
       "target": "api::studio.studio",
       "mappedBy": "albtwlt"
+    },
+    "isJoinRequestsOpen": {
+      "type": "boolean",
+      "required": true,
+      "default": false
+    },
+    "requests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::champion-join-request.champion-join-request",
+      "mappedBy": "champ"
     }
   }
 }

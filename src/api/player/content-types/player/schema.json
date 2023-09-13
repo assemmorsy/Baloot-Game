@@ -43,6 +43,9 @@
     },
     "snap_link": {
       "type": "string"
+    },
+    "nameOnAdminPanel": {
+      "type": "string"
     }
   }
 }
