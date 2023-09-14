@@ -21,7 +21,7 @@ module.exports = createCoreController('api::player.player',
                     if (playerDate === -1) ctx.throw(404, "player Not Found");
 
                     const playerTransfers = await playerRepo.getPlayerTransfersById(playerId);
-
+                    // console.log(playerTransfers);
                     return { data: { ...playerDate, transfers: playerTransfers } }
                 } catch (error) {
                     console.error(error);

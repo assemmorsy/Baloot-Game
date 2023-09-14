@@ -18,7 +18,7 @@ const getPlayerTransfersById = async (playerId) => {
     try {
         let playerTransfers = await strapi.db.connection.raw(`
         select pt.transfered_at , ft.name as from_team_name ,ftf.formats -> 'thumbnail' ->> 'url' as from_team_logo ,
-        p.id as player_id, p.name ,fp.formats -> 'thumbnail ->> 'url' as image,
+        p.id as player_id, p.name ,fp.formats -> 'thumbnail' ->> 'url' as image,
         tt.name as to_team_name ,ttf.formats -> 'thumbnail' ->> 'url' as to_team_logo 
         from player_transfers pt
         left join player_transfers_from_team_links ftl on ftl.player_transfer_id = pt.id
