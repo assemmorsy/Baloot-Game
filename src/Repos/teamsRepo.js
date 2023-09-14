@@ -38,14 +38,14 @@ getPlayersByTeamId = async (teamId, atTime) => {
         let captain = await getCaptain(teamId, atTime);
 
         let players = []
-        playersMap.forEach(player, key => {
-            if (captain.length === 1 && player.id == captain[0].player_id) {
-                player.isCaptain = true
+        playersMap.forEach((value, key) => {
+            if (captain.length === 1 && value.id == captain[0].player_id) {
+                value.isCaptain = true
             } else {
 
-                player.isCaptain = false
+                value.isCaptain = false
             }
-            players.push(player)
+            players.push(value)
         });
         return players
     } catch (error) {
