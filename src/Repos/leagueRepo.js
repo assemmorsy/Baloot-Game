@@ -48,7 +48,35 @@ const getLeagueInfoById = async (leagueId) => {
         console.error(error);
     }
 }
+
+const getLatestLeagues = async () => {
+    const leaguesData = await strapi.db.connection.raw(`
+    select  l.id , l.name, fb.url as logo_background  , fl.url as champ_logo
+    from leagues l
+    left join files_related_morphs frmb on frmb.related_id = l.id
+    left join files fb on frmb.file_id = fb.id
+    left join files_related_morphs frml on frml.related_id = l.id
+    left join files fl on frml.file_id = fl.id 
+    where frmb.related_type = 'api::league.league' and frmb.field = 'ad_image' and frml.related_type = 'api::league.league' and frml.field = 'image'
+     and l.published_at is not null and (l.state = 'upcoming' or l.state = 'live' or (l.state= 'done' and l.end_at + INTERVAL '1 Month' > NOW()) );
+    `)
+    return leaguesData.rows
+}
+
+const getOpenToJoinLeagues = async () => {
+    const leaguesData = await strapi.db.connection.raw(`
+    select  l.id , l.name,  fl.url as champ_logo
+    from leagues l
+    left join files_related_morphs frml on frml.related_id = l.id
+    left join files fl on frml.file_id = fl.id 
+    where frml.related_type = 'api::league.league' and frml.field = 'image'
+    and l.published_at is not null and ( l.state = 'upcoming' and l.is_join_requests_open = true );
+    `)
+    return leaguesData.rows
+}
 module.exports = {
     getTeamsOfLeague,
-    getLeagueInfoById
+    getLeagueInfoById,
+    getLatestLeagues,
+    getOpenToJoinLeagues
 }

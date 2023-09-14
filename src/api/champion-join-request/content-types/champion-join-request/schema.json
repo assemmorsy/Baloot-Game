@@ -13,47 +13,61 @@
   "pluginOptions": {},
   "attributes": {
     "email": {
-      "type": "email"
+      "type": "email",
+      "required": true
     },
     "teamName": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "phone": {
       "type": "string",
-      "regex": "/^[\\+]?[(]?[0-9]{3}[)]?[-\\s\\.]?[0-9]{3}[-\\s\\.]?[0-9]{4,6}$/im"
+      "required": true
     },
     "fpName": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "fpCity": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "fpAge": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "fpExperience": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true
     },
     "spName": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "spCity": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "spAge": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "spExperience": {
-      "type": "decimal"
+      "type": "decimal",
+      "required": true
     },
     "IsPlayedBefore": {
-      "type": "string"
+      "type": "string",
+      "required": true
     },
     "champ": {
       "type": "relation",
       "relation": "manyToOne",
       "target": "api::league.league",
       "inversedBy": "requests"
+    },
+    "date": {
+      "type": "datetime"
     }
   }
 }

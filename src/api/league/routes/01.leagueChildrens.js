@@ -39,6 +39,16 @@ module.exports = {
         },
         {
             method: "GET",
+            path: "/leagues/opened_to_join",
+            handler: "league.OpenToJoinLeagues",
+            config: {
+                auth: false,
+                policies: [],
+                middlewares: [],
+            },
+        },
+        {
+            method: "GET",
             path: "/leagues/:id/players",
             handler: "league.findAllPlayersOfLeague",
             config: {

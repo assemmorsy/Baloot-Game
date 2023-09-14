@@ -266,24 +266,21 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
     },
     async upcoming(ctx) {
       try {
-        const leaguesData = await strapi.db.connection.raw(`
-        select  l.id , l.name, fb.url as logo_background  , fl.url as champ_logo
-        from leagues l
-        left join files_related_morphs frmb on frmb.related_id = l.id
-        left join files fb on frmb.file_id = fb.id
-
-        left join files_related_morphs frml on frml.related_id = l.id
-        left join files fl on frml.file_id = fl.id 
-
-        where frmb.related_type = 'api::league.league' and frmb.field = 'ad_image' and frml.related_type = 'api::league.league' and frml.field = 'image' and l.published_at is not null and (l.state = 'upcoming' or l.state = 'live' );
-
-    `)
-        return { data: leaguesData.rows }
+        const leaguesData = await leagueRepo.getLatestLeagues()
+        return { data: leaguesData }
       } catch (error) {
         console.error(error);
         return { error_text: "error in fetching data from db" }
       }
-
+    },
+    async OpenToJoinLeagues(ctx) {
+      try {
+        const leaguesData = await leagueRepo.getOpenToJoinLeagues()
+        return { data: leaguesData }
+      } catch (error) {
+        console.error(error);
+        return { error_text: "error in fetching data from db" }
+      }
     }
   };
 });
