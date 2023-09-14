@@ -16,12 +16,6 @@
       "type": "string",
       "required": true
     },
-    "players": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::player.player",
-      "mappedBy": "team"
-    },
     "logo": {
       "type": "media",
       "multiple": false,
@@ -50,6 +44,17 @@
     },
     "founded_in": {
       "type": "date",
+      "required": true
+    },
+    "team_captains": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-captain.team-captain",
+      "mappedBy": "team"
+    },
+    "showInAllTeams": {
+      "type": "boolean",
+      "default": true,
       "required": true
     }
   }

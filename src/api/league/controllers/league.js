@@ -1,6 +1,6 @@
 "use strict";
 const { createCoreController } = require("@strapi/strapi").factories;
-
+const leagueRepo = require("./../../../Repos/leagueRepo")
 module.exports = createCoreController("api::league.league", ({ strapi }) => {
   const Champ_Types = ["league", "super", "cup"]
   return {
@@ -124,41 +124,21 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
       return { ...league, referees: referees.rows }
     },
     async findAllTeamsOfLeague(ctx) {
-      let leaguePlayers = await this.findAllPlayersOfLeague(ctx);
-      let teamsObj = {}
-      leaguePlayers.players.forEach((player) => {
-        if (!Object.hasOwnProperty.call(teamsObj, player.team_id)) {
-          teamsObj[player.team_id] = {
-            name: player.team_name,
-            id: player.team_id,
-            logo: player.team_logo,
-            players: []
-          }
+      try {
+        let leagueId = strapi.requestContext.get().params.id;
+        if (!leagueId || isNaN(leagueId)) {
+          console.log("from in valid ID ");
+          ctx.throw(404, "League Not Found");
         }
-        if (player.player_order === 1) {
-          teamsObj[player.team_id].players.unshift({
-            id: player.player_id,
-            name: player.name,
-            image: player.player_img,
-            is_captain: true
-          })
-        } else {
-          teamsObj[player.team_id].players.push({
-            id: player.player_id,
-            name: player.name,
-            image: player.player_img,
-            is_captain: false
-          })
-        }
+        let leagueData = await leagueRepo.getTeamsOfLeague(leagueId)
 
-      })
-      let teams = []
-      for (const key in teamsObj) {
-        teams.push(teamsObj[key]);
+        if (leagueData === -1) {
+          ctx.throw(404, "League Not Found");
+        }
+        return leagueData
+      } catch (error) {
+        console.error(error);
       }
-      let res = { ...leaguePlayers, teams: teams }
-      delete res.players;
-      return res
     },
     async findAllPlayersOfLeague(ctx) {
       let league = await this.findLeague(ctx)
@@ -226,19 +206,12 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
         console.log("from in valid ID ");
         ctx.throw(404, "League Not Found");
       }
+      let leagueData = await leagueRepo.getLeagueInfoById(leagueId)
 
-      let leagueDate = await strapi.db.connection.raw(`
-        select l.id , l.name , f.url
-        from leagues l
-        inner join files_related_morphs frm on frm.related_id = l.id
-        inner join files f on frm.file_id = f.id
-        where l.id = ${leagueId} and l.published_at is not null and frm.related_type = 'api::league.league' and frm.field = 'image';
-        `)
-
-      if (leagueDate.rows.length === 0) {
+      if (leagueData === -1) {
         ctx.throw(404, "League Not Found");
       }
-      return { ...leagueDate.rows[0] }
+      return leagueData
     },
     async statistics(ctx) {
       let league = await this.findLeague(ctx)

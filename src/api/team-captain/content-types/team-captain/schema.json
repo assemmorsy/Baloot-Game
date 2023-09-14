@@ -1,0 +1,31 @@
+{
+  "kind": "collectionType",
+  "collectionName": "team_captains",
+  "info": {
+    "singularName": "team-captain",
+    "pluralName": "team-captains",
+    "displayName": "كابتن الفريق",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "becameCaptianAt": {
+      "type": "date"
+    },
+    "team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "team_captains"
+    },
+    "player": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::player.player",
+      "inversedBy": "team_captains"
+    }
+  }
+}

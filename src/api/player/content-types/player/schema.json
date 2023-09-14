@@ -26,12 +26,6 @@
         "images"
       ]
     },
-    "team": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::team.team",
-      "inversedBy": "players"
-    },
     "player_transfers": {
       "type": "relation",
       "relation": "oneToMany",
@@ -44,8 +38,14 @@
     "snap_link": {
       "type": "string"
     },
-    "nameOnAdminPanel": {
+    "tiktok_link": {
       "type": "string"
+    },
+    "team_captains": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::team-captain.team-captain",
+      "mappedBy": "player"
     }
   }
 }
