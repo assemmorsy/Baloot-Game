@@ -70,7 +70,7 @@ const getOpenToJoinLeagues = async () => {
     left join files_related_morphs frml on frml.related_id = l.id
     left join files fl on frml.file_id = fl.id 
     where frml.related_type = 'api::league.league' and frml.field = 'image'
-    and l.published_at is not null and ( l.state = 'upcoming' and l.is_join_requests_open = true );
+    and ( l.state = 'upcoming' and l.is_join_requests_open = true );
     `)
     return leaguesData.rows
 }
