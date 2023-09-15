@@ -2,7 +2,7 @@
 const { createCoreController } = require("@strapi/strapi").factories;
 const leagueRepo = require("./../../../Repos/leagueRepo")
 module.exports = createCoreController("api::league.league", ({ strapi }) => {
-  const Champ_Types = ["league", "super", "cup"]
+  const Champ_Types = ["league", "super", "cup", "hezam"]
   return {
     async getById(ctx) {
       let leagueId = strapi.requestContext.get().params.id;
