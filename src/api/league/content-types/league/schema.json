@@ -47,7 +47,8 @@
       "enum": [
         "league",
         "cup",
-        "super"
+        "super",
+        "hezam"
       ],
       "required": true,
       "default": "league"
