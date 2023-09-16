@@ -99,6 +99,12 @@
       "relation": "oneToMany",
       "target": "api::champion-join-request.champion-join-request",
       "mappedBy": "champ"
+    },
+    "team": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::team.team",
+      "inversedBy": "champ"
     }
   }
 }

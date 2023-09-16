@@ -47,16 +47,7 @@ module.exports = {
                 middlewares: [],
             },
         },
-        {
-            method: "GET",
-            path: "/leagues/:id/players",
-            handler: "league.findAllPlayersOfLeague",
-            config: {
-                auth: false,
-                policies: [],
-                middlewares: [],
-            },
-        },
+      
         {
             method: "GET",
             path: "/leagues/:id/teams",
@@ -75,15 +66,7 @@ module.exports = {
                 policies: [],
             },
         },
-        {
-            method: "GET",
-            path: "/leagues/:id/referees",
-            handler: "league.findAllRefereesOfLeague",
-            config: {
-                auth: false,
-                policies: [],
-            },
-        },
+       
 
         {
             method: "GET",
