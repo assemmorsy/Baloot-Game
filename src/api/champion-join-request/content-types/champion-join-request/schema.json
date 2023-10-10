@@ -68,6 +68,9 @@
     },
     "date": {
       "type": "datetime"
+    },
+    "whatapp_link": {
+      "type": "string"
     }
   }
 }

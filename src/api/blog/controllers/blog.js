@@ -19,7 +19,7 @@ module.exports = createCoreController('api::blog.blog',
                     pgNum = parseInt(pgNum);
 
                     const blogsDate = await strapi.db.connection.raw(`
-                        select b.id , b.title, b.description , b.published_at , fb.formats -> 'thumbnail' ->> 'url' as image
+                        select b.id , b.title, b.description , b.published_at , fb.url as image
                         from blogs b
                         left join files_related_morphs frmb on frmb.related_id = b.id
                         left join files fb on frmb.file_id = fb.id
@@ -43,7 +43,7 @@ module.exports = createCoreController('api::blog.blog',
                 }
                 try {
                     const blogData = await strapi.db.connection.raw(`
-                        select  b.id , b.title, b.description , b.published_at , fb.formats -> 'thumbnail' ->> 'url' as image , b.details
+                        select  b.id , b.title, b.description , b.published_at , fb.url as image , b.details
                         from blogs b
                         left join files_related_morphs frmb on frmb.related_id = b.id
                         left join files fb on frmb.file_id = fb.id
