@@ -111,7 +111,7 @@ getTeamTotalStatistics = async (teamId) => {
         let stat = await strapi.db.connection.raw(`
         select sum(played_matches) as "عدد المباريات" , 
             sum(skaat_played) as "عدد الصكات الملعوبة" , 
-            sum(skaat_winned) as "عدد الصكات المربوحة" ,
+            sum(skaat_winned) as "عدد الصكات الرابحة" ,
             sum(skaat_played) - sum(skaat_winned) as "عدد الصكات الخاسرة" , sum(abnat) as "الابناط" ,
             sum(akak) as "الاكك", sum(akalat) as "الأكلات" , sum(moshtary_sun) as "مشترى صن" ,
             sum(moshtary_hakam) as "مشترى حكم", sum(moshtrayat_nagha) as "مشتريات ناجحة" ,
@@ -128,7 +128,7 @@ getTeamTotalStatistics = async (teamId) => {
                     sum(team_2_kababit_hakam_count) as kababit_hakam_count, sum(team_2_abnat) as abnat  ,count(*) as played_matches
                     FROM public.matches m  
                     join public.matches_team_2_links mt2l on mt2l.match_id = m.id 
-                    where mt2l.team_id =  ${teamId} and m.state ='انتهت'
+                    where mt2l.team_id =  ${teamId} and m.state ='انتهت' 
                 
                     union
                 

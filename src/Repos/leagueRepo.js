@@ -179,7 +179,7 @@ const getLeagueStatistics = async (leagueId) => {
     let data = await strapi.db.connection.raw(`
     select name as "الاسم" , 
       sum(skaat_played) as "عدد الصكات الملعوبة" , 
-    sum(skaat_winned) as "عدد الصكات المربوحة" ,
+    sum(skaat_winned) as "عدد الصكات الرابحة" ,
     sum(skaat_played) - sum(skaat_winned) as "عدد الصكات الخاسرة" , sum(abnat) as "الابناط" ,
     sum(akak) as "الاكك", sum(akalat) as "الأكلات" , sum(moshtary_sun) as "مشترى صن" ,
     sum(moshtary_hakam) as "مشترى حكم", sum(moshtrayat_nagha) as "مشتريات ناجحة" ,
@@ -199,7 +199,7 @@ const getLeagueStatistics = async (leagueId) => {
           join public.matches_albtwlt_links mll on mll.match_id = m.id
       join leagues l on l.id = mll.league_id
       join public.teams t on t.id = mt2l.team_id
-      where l.id = ${leagueId} and l.published_at is not null
+      where l.id = ${leagueId} and l.published_at is not null and m.state = 'انتهت' and t.name NOT LIKE '%يحدد لاحقا%'
          group by (t.name)
     
       union
@@ -216,6 +216,7 @@ const getLeagueStatistics = async (leagueId) => {
       join leagues l on l.id = mll.league_id
       join public.teams t on t.id = mt1l.team_id
       where l.id = ${leagueId} and l.published_at is not null
+      and m.state = 'انتهت' and t.name NOT LIKE '%يحدد لاحقا%'
         group by (t.name)
       )as nt group by nt.name ;
     `)

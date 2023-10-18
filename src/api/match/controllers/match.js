@@ -164,7 +164,7 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                     where l.published_at is not null and m.start_at::date >= CURRENT_DATE and m.type = 'official'
                     and frm1.related_type = 'api::team.team' and frm2.related_type = 'api::team.team'
                     order by m.start_at 
-                    limit 5; `)
+                    limit 3; `)
                 return { matches: [...officialMatches.rows] }
 
             } catch (error) {
