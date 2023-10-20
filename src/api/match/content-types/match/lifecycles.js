@@ -34,6 +34,7 @@ function orderHezamTeams(team1, team2) {
         return team2ConsecutiveWins - team1ConsecutiveWins;
     }
 }
+
 function getFrequencyOfValueInArray(arr, val) {
     let currentFreq = 0;
     let maxFreq = 0;
@@ -49,6 +50,7 @@ function getFrequencyOfValueInArray(arr, val) {
         maxFreq = currentFreq;
     return maxFreq;
 }
+
 async function generateHezamTable(leagueId) {
 
     let teamsData = await strapi.db.connection.raw(`
@@ -215,7 +217,7 @@ async function generateLeagueTable(leagueId) {
 
 async function handleCRUDMatch(matchId) {
     let leagues = await strapi.db.connection.raw(`
-        select mll.league_id , l.type
+        select mll.league_id as leagueId , l.type
         from public.matches_albtwlt_links mll
         join leagues  l on l.id = mll.league_id
         where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam')
