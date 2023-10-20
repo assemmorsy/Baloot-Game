@@ -1,6 +1,6 @@
 const { ApplicationError } = require("@strapi/utils").errors;
 
-function orderTeams(team1, team2) {
+function orderLeagueTeams(team1, team2) {
     if (team1.totalScore === team2.totalScore) {
         return team2.abnat - team1.abnat;
     } else {
@@ -8,53 +8,149 @@ function orderTeams(team1, team2) {
     }
 }
 
-async function generateLeagueTable(matchId) {
-    let leagues = await strapi.db.connection.raw(`
-        select mll.league_id 
-        from public.matches_albtwlt_links mll
-        join leagues  l on l.id = mll.league_id
-        where mll.match_id = ${matchId} and l.published_at is not null and l.type = 'league'
-    `)
+function orderHezamTeams(team1, team2) {
+    let team1ConsecutiveWins = getFrequencyOfValueInArray(team1.playedMatches, true)
+    let team2ConsecutiveWins = getFrequencyOfValueInArray(team2.playedMatches, true)
+    if (team1ConsecutiveWins === team2ConsecutiveWins) {
+        let team1WinsInDirectMatchesWithTeam2 = team1.directMatches[team2.id].playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc)
+        let team2WinsInDirectMatchesWithTeam1 = team2.directMatches[team1.id].playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc)
+        if (team1WinsInDirectMatchesWithTeam2 === team2WinsInDirectMatchesWithTeam1) {
+            let team1TotalWins = team1.playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc);
+            let team2TotalWins = team2.playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc);
+            if (team1TotalWins === team2TotalWins) {
+                if (team1.directMatches[team2.id].abnat === team2.directMatches[team1.id].abnat) {
+                    return team2.abnat - team1.abnat;
+                } else {
+                    return team2.directMatches[team1.id].abnat - team1.directMatches[team2.id].abnat
+                }
+            } else {
+                return team2TotalWins - team1TotalWins
+            }
 
-    if (leagues.rows.length != 1) {
-        // match not belong to a league
-        return;
+        } else {
+            return team2WinsInDirectMatchesWithTeam1 - team1WinsInDirectMatchesWithTeam2;
+        }
+    } else {
+        return team2ConsecutiveWins - team1ConsecutiveWins;
     }
-    let leagueId = leagues.rows[0].league_id;
-
-    let leagueTableData = await strapi.db.connection.raw(`
-        select league_tables.id 
-        from league_tables
-        inner join league_tables_league_links ltll on ltll.league_table_id = league_tables.id
-        where ltll.league_id = ${leagueId} 
-    `)
-
-    if (leagueTableData.rows.length === 0) {
-        // league not a table 
-        return;
+}
+function getFrequencyOfValueInArray(arr, val) {
+    let currentFreq = 0;
+    let maxFreq = 0;
+    for (let i = 0; i < arr.length; i++) {
+        if (arr[i] === val) currentFreq++;
+        else {
+            if (currentFreq > maxFreq)
+                maxFreq = currentFreq;
+            currentFreq = 0;
+        }
     }
-    let leagueTableID = leagueTableData.rows[0].id;
-
+    if (currentFreq > maxFreq)
+        maxFreq = currentFreq;
+    return maxFreq;
+}
+async function generateHezamTable(leagueId) {
 
     let teamsData = await strapi.db.connection.raw(`
-    select t.id ,  t.name
+        select t.id , t.name from leagues l 
+        join leagues_team_links ltl on ltl.league_id = l.id
+        join teams t on t.id = ltl.team_id
+        where l.id =  ${leagueId} ;
+    `)
+    // let teams = [{name:"team1", id :1 } , {name:"team2", id : 2 } ,{name:"team3", id : 3 } ,{name:"team4", id : 4 } ,{name:"team5", id : 5} ,  ]; 
+    let tableObj = {};
+
+    teamsData.rows.forEach((team) => {
+        tableObj[team.id] = {
+            id: team.id,
+            name: team.name,
+            playedMatches: [],
+            totalAbnatSum: 0,
+            totalNumberOfRounds: 0,
+            abnat: 0,
+            directMatches: {}
+        };
+        teamsData.rows.forEach((elm) => {
+            if (elm.id !== team.id)
+                tableObj[team.id].directMatches[elm.id] = {
+                    id: elm.id,
+                    name: elm.name,
+                    playedMatches: [],
+                    abnat: 0,
+                    totalAbnatSum: 0,
+                    totalNumberOfRounds: 0,
+                }
+        })
+    });
+
+    let matchesData = await strapi.db.connection.raw(`
+    select t1.id as team_1_id,t1.name as team_1_name,m.team_1_score,m.team_1_abnat 
+        ,t2.id as team_2_id,t2.name as team_2_name,m.team_2_score,m.team_2_abnat ,m.number_of_rounds
     from leagues l 
     inner join matches_albtwlt_links mll on mll.league_id = l.id
     inner join matches m on  m.id = mll.match_id
     inner join matches_team_1_links mt1l on m.id = mt1l.match_id
-    inner join teams t on t.id = mt1l.team_id
-    where l.id = ${leagueId}
-    union 
-    select t.id ,  t.name
-    from leagues l 
-    inner join matches_albtwlt_links mll on mll.league_id = l.id
-    inner join matches m on  m.id = mll.match_id
     inner join matches_team_2_links mt2l on m.id = mt2l.match_id
-    inner join teams t on t.id = mt2l.team_id
-    where l.id =  ${leagueId} ;
-`)
+    inner join teams t1 on t1.id = mt1l.team_id
+    inner join teams t2 on t2.id = mt2l.team_id
+    where l.id = ${leagueId} and m.state= 'انتهت';
+    `)
+
+    let matches = matchesData.rows;
+    for (let i = 0; i < matches.length; i++) {
+        const match = matches[i];
+        let { team_1_id, team_1_score, team_1_abnat, number_of_rounds,
+            team_2_id, team_2_score, team_2_abnat } = match;
+
+        tableObj[team_1_id].totalAbnatSum += team_1_abnat;
+        tableObj[team_2_id].totalAbnatSum += team_2_abnat;
+
+        tableObj[team_1_id].totalNumberOfRounds += number_of_rounds;
+        tableObj[team_2_id].totalNumberOfRounds += number_of_rounds;
+
+        tableObj[team_1_id].directMatches[team_2_id].totalAbnatSum += team_1_abnat;
+        tableObj[team_2_id].directMatches[team_1_id].totalAbnatSum += team_2_abnat;
+
+        tableObj[team_1_id].directMatches[team_2_id].totalNumberOfRounds += number_of_rounds;
+        tableObj[team_2_id].directMatches[team_1_id].totalNumberOfRounds += number_of_rounds;
+
+        tableObj[team_1_id].playedMatches.push(team_1_score > team_2_score);
+        tableObj[team_2_id].playedMatches.push(team_2_score > team_1_score);
+        tableObj[team_1_id].directMatches[team_2_id].playedMatches.push(team_1_score > team_2_score);
+        tableObj[team_2_id].directMatches[team_1_id].playedMatches.push(team_2_score > team_1_score);
+    }
+
+    for (const team_id in tableObj) {
+        tableObj[team_id].abnat = (tableObj[team_id].totalAbnatSum / tableObj[team_id].totalNumberOfRounds).toFixed(1);
+        for (const vs_team_id in tableObj[team_id].directMatches) {
+            tableObj[team_id].directMatches[vs_team_id].abnat =
+                (tableObj[team_id].directMatches[vs_team_id].totalAbnatSum / tableObj[team_id].directMatches[vs_team_id].totalNumberOfRounds).toFixed(1);
+        }
+    }
+
+    let tableArray = [];
+
+    for (const team_id in tableObj) {
+        tableArray.push(tableObj[team_id]);
+    }
+
+    tableArray = tableArray.sort(orderHezamTeams)
+
+    return tableArray;
+}
+
+async function generateLeagueTable(leagueId) {
+
+
+    let teamsData = await strapi.db.connection.raw(`
+        select t.id , t.name from leagues l 
+        join leagues_team_links ltl on ltl.league_id = l.id
+        join teams t on t.id = ltl.team_id
+        where l.id =  ${leagueId} ;
+    `)
 
     let tableObj = {};
+
     teamsData.rows.forEach((team) => {
         tableObj[team.id] = {
             id: team.id,
@@ -80,7 +176,7 @@ async function generateLeagueTable(matchId) {
     inner join teams t1 on t1.id = mt1l.team_id
     inner join teams t2 on t2.id = mt2l.team_id
     where l.id = ${leagueId} and m.state= 'انتهت';
-`)
+    `)
 
     let matches = matchesData.rows;
 
@@ -113,7 +209,47 @@ async function generateLeagueTable(matchId) {
         tableArray.push(tableObj[team_id]);
     }
 
-    tableArray = tableArray.sort(orderTeams)
+    tableArray = tableArray.sort(orderLeagueTeams)
+    return tableArray;
+}
+
+async function handleCRUDMatch(matchId) {
+    let leagues = await strapi.db.connection.raw(`
+        select mll.league_id , l.type
+        from public.matches_albtwlt_links mll
+        join leagues  l on l.id = mll.league_id
+        where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam')
+    `)
+
+    if (leagues.rows.length != 1) {
+        // match not belong to a league
+        return;
+    }
+    let { leagueId, type } = leagues.rows[0];
+
+    let leagueTableData = await strapi.db.connection.raw(`
+        select league_tables.id 
+        from league_tables
+        inner join league_tables_league_links ltll on ltll.league_table_id = league_tables.id
+        where ltll.league_id = ${leagueId} 
+    `)
+
+    if (leagueTableData.rows.length === 0) {
+        // league not a table 
+        return;
+    }
+    let leagueTableID = leagueTableData.rows[0].id;
+
+    let tableArray;
+    switch (type) {
+        case 'league':
+            tableArray = await generateLeagueTable(leagueId);
+            break;
+
+        case 'hezam':
+            tableArray = await generateHezamTable(leagueId);
+            break;
+    }
 
     await strapi.db.connection.raw(`
         UPDATE 
@@ -186,17 +322,17 @@ module.exports = {
     async afterCreate(event) {
         let matchId = event.result.id
         console.log(matchId);
-        await generateLeagueTable(matchId)
+        await handleCRUDMatch(matchId)
     },
 
     async afterUpdate(event) {
         let matchId = event.params.where.id;
-        await generateLeagueTable(matchId)
+        await handleCRUDMatch(matchId)
     },
 
     async afterDelete(event) {
         let matchId = event.params.where.id;
-        await generateLeagueTable(matchId)
+        await handleCRUDMatch(matchId)
     },
 
 
