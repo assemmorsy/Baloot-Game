@@ -227,13 +227,15 @@ async function handleCRUDMatch(matchId) {
         // match not belong to a league
         return;
     }
-    let { leagueId, type } = leagues.rows[0];
-
+    let { leagueid, type } = leagues.rows[0];
+    // console.log(leagues.rows[0]);
+    // console.log(leagueid)
+    // console.log(type)
     let leagueTableData = await strapi.db.connection.raw(`
         select league_tables.id 
         from league_tables
         inner join league_tables_league_links ltll on ltll.league_table_id = league_tables.id
-        where ltll.league_id = ${leagueId} 
+        where ltll.league_id = ${leagueid} 
     `)
 
     if (leagueTableData.rows.length === 0) {
@@ -245,11 +247,11 @@ async function handleCRUDMatch(matchId) {
     let tableArray;
     switch (type) {
         case 'league':
-            tableArray = await generateLeagueTable(leagueId);
+            tableArray = await generateLeagueTable(leagueid);
             break;
 
         case 'hezam':
-            tableArray = await generateHezamTable(leagueId);
+            tableArray = await generateHezamTable(leagueid);
             break;
     }
 
