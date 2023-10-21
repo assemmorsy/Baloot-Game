@@ -5,6 +5,8 @@
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
+const leagueRepo = require("../../../Repos/leagueRepo")
+
 
 module.exports = createCoreController('api::match.match', ({ strapi }) => {
     return {
@@ -147,7 +149,9 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
         },
         async getUpcoming() {
             try {
-                let officialMatches = await strapi.db.connection.raw(` select m.id,t1.name as team_1_name,m.team_1_score,
+                let leagueIdOfHomePage = await strapi.db.connection.raw("select league_id from public.home_page_championships_championship_links where home_page_championship_id = 1  ;");
+                if (leagueIdOfHomePage.rows.length === 0) {
+                    let officialMatches = await strapi.db.connection.raw(` select m.id,t1.name as team_1_name,m.team_1_score,
                     f1.formats -> 'thumbnail' ->> 'url' as team_1_logo,t2.name as team_2_name,m.team_2_score,f2.formats -> 'thumbnail' ->> 'url' as team_2_logo, 
                     m.state ,m.url, m.start_at,m.tournment_name as tournament_name , l.name, m.type , l.id as league_id
                     from matches m
@@ -165,7 +169,12 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                     and frm1.related_type = 'api::team.team' and frm2.related_type = 'api::team.team'
                     order by m.start_at 
                     limit 4; `)
-                return { matches: [...officialMatches.rows] }
+                    return { matches: [...officialMatches.rows] }
+                } else {
+                    let leagueId = leagueIdOfHomePage.rows[0].league_id;
+                    let matches = await leagueRepo.getAllMatchesOfLeague(leagueId);
+                    return { ...matches }
+                }
 
             } catch (error) {
                 console.error(error);

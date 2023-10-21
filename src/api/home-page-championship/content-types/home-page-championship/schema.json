@@ -1,0 +1,21 @@
+{
+  "kind": "singleType",
+  "collectionName": "home_page_championships",
+  "info": {
+    "singularName": "home-page-championship",
+    "pluralName": "home-page-championships",
+    "displayName": "اختر البطولة لعرض مبارياتها في الصفخة الرئيسية",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "championship": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::league.league"
+    }
+  }
+}
