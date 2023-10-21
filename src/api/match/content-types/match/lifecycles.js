@@ -12,11 +12,14 @@ function orderHezamTeams(team1, team2) {
     let team1ConsecutiveWins = getFrequencyOfValueInArray(team1.playedMatches, true)
     let team2ConsecutiveWins = getFrequencyOfValueInArray(team2.playedMatches, true)
     if (team1ConsecutiveWins === team2ConsecutiveWins) {
-        let team1WinsInDirectMatchesWithTeam2 = team1.directMatches[team2.id].playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc)
-        let team2WinsInDirectMatchesWithTeam1 = team2.directMatches[team1.id].playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc)
+
+        let team1WinsInDirectMatchesWithTeam2 = team1.directMatches[team2.id].playedMatches
+            .filter((elm) => elm === true).length
+        let team2WinsInDirectMatchesWithTeam1 = team2.directMatches[team1.id].playedMatches
+            .filter((elm) => elm === true).length
         if (team1WinsInDirectMatchesWithTeam2 === team2WinsInDirectMatchesWithTeam1) {
-            let team1TotalWins = team1.playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc);
-            let team2TotalWins = team2.playedMatches.reduce((acc, elm) => elm === true ? ++acc : acc);
+            let team1TotalWins = team1.playedMatches.filter((elm) => elm === true).length;
+            let team2TotalWins = team2.playedMatches.filter((elm) => elm === true).length;
             if (team1TotalWins === team2TotalWins) {
                 if (team1.directMatches[team2.id].abnat === team2.directMatches[team1.id].abnat) {
                     return team2.abnat - team1.abnat;
@@ -123,10 +126,10 @@ async function generateHezamTable(leagueId) {
     }
 
     for (const team_id in tableObj) {
-        tableObj[team_id].abnat = (tableObj[team_id].totalAbnatSum / tableObj[team_id].totalNumberOfRounds).toFixed(1);
+        tableObj[team_id].abnat = tableObj[team_id].totalNumberOfRounds !== 0 ? (tableObj[team_id].totalAbnatSum / tableObj[team_id].totalNumberOfRounds).toFixed(1) : 0;
         for (const vs_team_id in tableObj[team_id].directMatches) {
-            tableObj[team_id].directMatches[vs_team_id].abnat =
-                (tableObj[team_id].directMatches[vs_team_id].totalAbnatSum / tableObj[team_id].directMatches[vs_team_id].totalNumberOfRounds).toFixed(1);
+            tableObj[team_id].directMatches[vs_team_id].abnat = tableObj[team_id].directMatches[vs_team_id].totalNumberOfRounds !== 0 ?
+                (tableObj[team_id].directMatches[vs_team_id].totalAbnatSum / tableObj[team_id].directMatches[vs_team_id].totalNumberOfRounds).toFixed(1) : 0;
         }
     }
 
@@ -136,7 +139,17 @@ async function generateHezamTable(leagueId) {
         tableArray.push(tableObj[team_id]);
     }
 
-    tableArray = tableArray.sort(orderHezamTeams)
+    tableArray = tableArray.sort(orderHezamTeams).map(elm => {
+        return {
+            id: elm.id,
+            name: elm.name,
+            play: elm.playedMatches.length,
+            win: elm.playedMatches.filter(elm => elm === true).length,
+            lost: elm.playedMatches.filter(elm => elm === true).length,
+            abnat: elm.abnat,
+            consecutiveWins: getFrequencyOfValueInArray(elm.playedMatches, true)
+        }
+    })
 
     return tableArray;
 }
@@ -228,9 +241,7 @@ async function handleCRUDMatch(matchId) {
         return;
     }
     let { leagueid, type } = leagues.rows[0];
-    // console.log(leagues.rows[0]);
-    // console.log(leagueid)
-    // console.log(type)
+
     let leagueTableData = await strapi.db.connection.raw(`
         select league_tables.id 
         from league_tables
