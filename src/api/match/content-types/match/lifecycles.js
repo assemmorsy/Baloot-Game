@@ -146,7 +146,7 @@ async function generateHezamTable(leagueId) {
             play: elm.playedMatches.length,
             win: elm.playedMatches.filter(elm => elm === true).length,
             lost: elm.playedMatches.filter(elm => elm === false).length,
-            abnat: elm.abnat,
+            abnat: elm.totalAbnatSum,
             consecutiveWins: getFrequencyOfValueInArray(elm.playedMatches, true)
         }
     })
