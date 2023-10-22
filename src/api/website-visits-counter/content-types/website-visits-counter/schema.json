@@ -1,0 +1,22 @@
+{
+  "kind": "singleType",
+  "collectionName": "website_visits_counters",
+  "info": {
+    "singularName": "website-visits-counter",
+    "pluralName": "website-visits-counters",
+    "displayName": "website_visits_counter",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "counter": {
+      "type": "biginteger",
+      "required": true,
+      "min": "0",
+      "default": "0"
+    }
+  }
+}
