@@ -98,7 +98,8 @@ async function generateHezamTable(leagueId) {
     inner join matches_team_2_links mt2l on m.id = mt2l.match_id
     inner join teams t1 on t1.id = mt1l.team_id
     inner join teams t2 on t2.id = mt2l.team_id
-    where l.id = ${leagueId} and m.state= 'انتهت';
+    where l.id = ${leagueId} and m.state= 'انتهت'
+	 order by m.start_at;
     `)
 
     let matches = matchesData.rows;
@@ -353,3 +354,4 @@ module.exports = {
 
 
 }
+
