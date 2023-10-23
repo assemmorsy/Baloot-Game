@@ -16,9 +16,12 @@ module.exports = createCoreController('api::website-visits-counter.website-visit
                 set counter = (select counter from website_visits_counters) + 1 
                 where  id = 1; 
                 `);
+                return "done"
             } catch (err) {
                 console.log(err);
+                return "error"
             }
-        }
+
+        },
     }
 });

@@ -9,7 +9,7 @@ module.exports = {
 
         {
             method: "POST",
-            path: "/add-one-to-website-counter",
+            path: "/website-visits-counter/add-one",
             handler: "website-visits-counter.addOneToWebsiteCounter",
             config: {
                 auth: false,
@@ -17,6 +17,5 @@ module.exports = {
                 middlewares: [],
             },
         },
-
     ]
 }
