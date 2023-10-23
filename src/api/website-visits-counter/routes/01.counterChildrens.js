@@ -1,16 +1,16 @@
 'use strict';
 
 /**
- * website-visits-counter router
+ * match router
  */
 
 module.exports = {
     routes: [
-        
+
         {
-            method: "post",
-            path: "/website-visits-counter",
-            handler: "website-visits-counter.addOne",
+            method: "POST",
+            path: "/add-one-to-website-counter",
+            handler: "website-visits-counter.addOneToWebsiteCounter",
             config: {
                 auth: false,
                 policies: [],
