@@ -138,8 +138,9 @@ async function generateHezamTable(leagueId) {
     for (const team_id in tableObj) {
         tableArray.push(tableObj[team_id]);
     }
-
     tableArray = tableArray.sort(orderHezamTeams).map(elm => {
+        console.log(elm.playedMatches)
+        console.log(getFrequencyOfValueInArray(elm.playedMatches, true))
         return {
             id: elm.id,
             name: elm.name,
