@@ -140,8 +140,7 @@ async function generateHezamTable(leagueId) {
         tableArray.push(tableObj[team_id]);
     }
     tableArray = tableArray.sort(orderHezamTeams).map(elm => {
-        console.log(elm.playedMatches)
-        console.log(getFrequencyOfValueInArray(elm.playedMatches, true))
+
         return {
             id: elm.id,
             name: elm.name,
@@ -309,31 +308,33 @@ module.exports = {
             },
         })
         // the user erased the team 1
-        if (params.data.team_1.disconnect.length !== 0 && params.data.team_1.connect.length == 0) {
+        if (params.data.team_1.disconnect.length !== 0 && params.data.team_1.connect.length === 0) {
+            console.error("you must choose team 2");
             throw new ApplicationError("you must choose team 1")
         }
         // the user erased the team 2
-        if (params.data.team_2.disconnect.length !== 0 && params.data.team_2.connect.length == 0) {
-            throw new ApplicationError("you must choose team 1")
+        if (params.data.team_2.disconnect.length !== 0 && params.data.team_2.connect.length === 0) {
+            console.error("you must choose team 2");
+            throw new ApplicationError("you must choose team 2")
         }
 
         // the user updated team 1 with same value as team 2
-        if (params.data.team_1.connect.length !== 0) {
-
-            if (params.data.team_1.connect[0].id == match.team_2.id) {
-
-                throw new ApplicationError("Team 1 cann't be the same as team 2")
-            }
+        if (params.data.team_1.connect.length !== 0 && params.data.team_2.connect.length !== 0
+            && params.data.team_1.connect[0].id === params.data.team_2.connect[0].id) {
+            console.error("team1 and team2 changed : they equal each other : Team 1 can't be the same as team 2");
+            throw new ApplicationError("Team 1 can't be the same as team 2")
+        }
+        else if (params.data.team_1.connect.length !== 0 && params.data.team_2.connect.length === 0
+            && match.team_2.id === params.data.team_1.connect[0].id) {
+            console.error("team1 changed : Team 1 can't be the same as team 2");
+            throw new ApplicationError("Team 1 can't be the same as team 2")
         }
         // the user updated team 2 with same value as team 1
-        if (params.data.team_2.connect.length !== 0) {
-            if (params.data.team_2.connect[0].id == match.team_1.id) {
-
-                throw new ApplicationError("Team 2 cann't be the same as team 1")
-
-            }
+        else if (params.data.team_1.connect.length === 0 && params.data.team_2.connect.length !== 0
+            && match.team_1.id === params.data.team_2.connect[0].id) {
+            console.error("team2 changed : Team 1 can't be the same as team 2");
+            throw new ApplicationError("Team 1 can't be the same as team 2");
         }
-
     }
     ,
     async afterCreate(event) {
