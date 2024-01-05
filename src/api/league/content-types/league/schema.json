@@ -105,6 +105,10 @@
       "relation": "manyToMany",
       "target": "api::team.team",
       "inversedBy": "champ"
+    },
+    "commitments": {
+      "type": "richtext",
+      "required": true
     }
   }
 }

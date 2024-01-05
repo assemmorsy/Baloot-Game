@@ -1,0 +1,53 @@
+{
+  "kind": "collectionType",
+  "collectionName": "apply_to_job_requests",
+  "info": {
+    "singularName": "apply-to-job-request",
+    "pluralName": "apply-to-job-requests",
+    "displayName": "طلبات الانضمام للوظائف",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "aboutMe": {
+      "type": "richtext"
+    },
+    "CV": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "files"
+      ]
+    },
+    "job": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::job.job",
+      "inversedBy": "apply_to_job_requests"
+    },
+    "date": {
+      "type": "datetime",
+      "required": true
+    }
+  }
+}

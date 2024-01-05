@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "jobs",
+  "info": {
+    "singularName": "job",
+    "pluralName": "jobs",
+    "displayName": "الوظائف",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "jobTitle": {
+      "type": "string",
+      "required": true
+    },
+    "jobDescription": {
+      "type": "richtext",
+      "required": true
+    },
+    "responsibilities": {
+      "type": "richtext",
+      "required": true
+    },
+    "isApplyingOpen": {
+      "type": "boolean",
+      "default": true,
+      "required": true
+    },
+    "apply_to_job_requests": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::apply-to-job-request.apply-to-job-request",
+      "mappedBy": "job"
+    }
+  }
+}

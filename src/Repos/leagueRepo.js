@@ -24,7 +24,7 @@ const getTeamsOfLeague = async (leagueId) => {
 const getLeagueInfoById = async (leagueId) => {
     try {
         let leagueDate = await strapi.db.connection.raw(`
-        select l.id , l.name , f.url , l.end_at ,l.type
+        select l.id , l.name , f.url , l.end_at ,l.type 
         from leagues l
         inner join files_related_morphs frm on frm.related_id = l.id
         inner join files f on frm.file_id = f.id
@@ -40,7 +40,7 @@ const getLeagueFullInfoById = async (leagueId) => {
     let leagueData = await strapi.db.connection.raw(`
         select l.id as leagueId, l.name  , l.start_at , l.end_at  , 
         l.description , l.type , l.state , t.name as winner_name , 
-        fl.url as league_logo,
+        fl.url as league_logo, l.commitments,
         ft.formats -> 'thumbnail' ->> 'url' as winner_logo,
         l.laws  from leagues l 
         left join leagues_champion_links lcl on lcl.league_id = l.id 
