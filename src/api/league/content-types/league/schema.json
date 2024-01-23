@@ -89,26 +89,11 @@
       "target": "api::studio.studio",
       "mappedBy": "albtwlt"
     },
-    "isJoinRequestsOpen": {
-      "type": "boolean",
-      "required": true,
-      "default": false
-    },
-    "requests": {
-      "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::champion-join-request.champion-join-request",
-      "mappedBy": "champ"
-    },
     "team": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::team.team",
       "inversedBy": "champ"
-    },
-    "commitments": {
-      "type": "richtext",
-      "required": true
     }
   }
 }

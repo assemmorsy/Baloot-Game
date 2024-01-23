@@ -10,7 +10,7 @@ const leagueRepo = require("../../../Repos/leagueRepo")
 
 module.exports = createCoreController('api::match.match', ({ strapi }) => {
     return {
-       
+
         async getById(ctx) {
             let matchId = strapi.requestContext.get().params.id;
             if (!matchId || isNaN(matchId)) {

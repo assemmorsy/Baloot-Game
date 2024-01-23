@@ -46,6 +46,9 @@
       "relation": "oneToMany",
       "target": "api::team-captain.team-captain",
       "mappedBy": "player"
+    },
+    "youtube_link": {
+      "type": "string"
     }
   }
 }

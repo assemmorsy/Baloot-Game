@@ -1,0 +1,48 @@
+{
+  "kind": "collectionType",
+  "collectionName": "join_as_referee_requests",
+  "info": {
+    "singularName": "join-as-referee-request",
+    "pluralName": "join-as-referee-requests",
+    "displayName": "طلبات الانضمام كحكام",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "phone": {
+      "type": "string",
+      "required": true
+    },
+    "address": {
+      "type": "string",
+      "required": true
+    },
+    "email": {
+      "type": "email",
+      "required": true
+    },
+    "birthDate": {
+      "type": "date",
+      "required": true
+    },
+    "experience": {
+      "type": "decimal",
+      "required": true
+    },
+    "sentAt": {
+      "type": "date",
+      "required": true
+    },
+    "IsJudgedBefore": {
+      "type": "string",
+      "required": true
+    }
+  }
+}

@@ -8,7 +8,7 @@
     "description": ""
   },
   "options": {
-    "draftAndPublish": true
+    "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
@@ -60,12 +60,6 @@
       "type": "string",
       "required": true
     },
-    "champ": {
-      "type": "relation",
-      "relation": "manyToOne",
-      "target": "api::league.league",
-      "inversedBy": "requests"
-    },
     "date": {
       "type": "datetime"
     },
@@ -79,6 +73,12 @@
     "spBirthDate": {
       "type": "date",
       "required": true
+    },
+    "followers_champion": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::followers-champion.followers-champion",
+      "inversedBy": "tlbat_alandmam_llbtwlats"
     }
   }
 }

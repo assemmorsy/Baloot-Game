@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "followers_champions",
+  "info": {
+    "singularName": "followers-champion",
+    "pluralName": "followers-champions",
+    "displayName": "FollowersChampions",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    },
+    "descriptions": {
+      "type": "text",
+      "required": true
+    },
+    "IsApplyOpen": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "Commitments": {
+      "type": "richtext",
+      "required": false
+    },
+    "tlbat_alandmam_llbtwlats": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::champion-join-request.champion-join-request",
+      "mappedBy": "followers_champion"
+    }
+  }
+}

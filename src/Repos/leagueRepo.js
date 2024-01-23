@@ -40,7 +40,7 @@ const getLeagueFullInfoById = async (leagueId) => {
     let leagueData = await strapi.db.connection.raw(`
         select l.id as leagueId, l.name  , l.start_at , l.end_at  , 
         l.description , l.type , l.state , t.name as winner_name , 
-        fl.url as league_logo, l.commitments,
+        fl.url as league_logo ,
         ft.formats -> 'thumbnail' ->> 'url' as winner_logo,
         l.laws  from leagues l 
         left join leagues_champion_links lcl on lcl.league_id = l.id 
@@ -49,7 +49,7 @@ const getLeagueFullInfoById = async (leagueId) => {
         left join teams t on t.id = lcl.team_id
         left join files_related_morphs frmt on frmt.related_id = t.id
         left join files ft on frmt.file_id = ft.id
-        where l.id = ${leagueId} and frml.related_type = 'api::league.league' and l.published_at is not null  and frml.field = 'image' 
+        where l.id = ${leagueId} and frml.related_type = 'api::league.league' and frml.field = 'image' 
         and ( frmt.related_type = 'api::team.team' or t.id is null  ); 
     `)
     return leagueData.rows.length !== 1 ? -1 : leagueData.rows[0]
@@ -177,16 +177,17 @@ const getAllMatchesOfLeague = async (leagueId) => {
 
 const getLeagueStatistics = async (leagueId) => {
     let data = await strapi.db.connection.raw(`
-    select name as "الاسم" , 
-      sum(skaat_played) as "عدد الصكات الملعوبة" , 
-    sum(skaat_winned) as "عدد الصكات الرابحة" ,
-    sum(skaat_played) - sum(skaat_winned) as "عدد الصكات الخاسرة" , sum(abnat) as "الابناط" ,
-    sum(akak) as "الاكك", sum(akalat) as "الأكلات" , sum(moshtary_sun) as "مشترى صن" ,
-    sum(moshtary_hakam) as "مشترى حكم", sum(moshtrayat_nagha) as "مشتريات ناجحة" ,
-    sum(moshtrayat_khasera) as "مشتريات خسرانة",
-    sum(sra) as "سرا", sum(baloot) as "بلوت" , sum(khamsin) as "خمسين" ,
-    sum("100") as "مية" , sum("400") as "أربعمية" , sum(kababit_sun_count) as "عدد الكبابيت صن" ,
-    sum(kababit_hakam_count) as "عدد الكبابيت حكم"
+    select name , 
+      sum(skaat_played) as skaat_played  , 
+    sum(skaat_winned) as skaat_winned ,
+    sum(skaat_played) - sum(skaat_winned) as skaat_lost , 
+    sum(abnat) as abnat  ,
+    sum(akak) as akak, sum(akalat) as akalat , sum(moshtary_sun) as moshtary_sun  ,
+    sum(moshtary_hakam) as moshtary_hakam , sum(moshtrayat_nagha) as moshtrayat_nagha  ,
+    sum(moshtrayat_khasera) as moshtrayat_khasera ,
+    sum(sra) as sra , sum(baloot) as baloot  , sum(khamsin) as khamsin  ,
+    sum("100") as m2a , sum("400") as rb3om2a , sum(kababit_sun_count) as kababit_sun_count  ,
+    sum(kababit_hakam_count) as kababit_hakam_count 
     from (
       SELECT t.name, sum(number_of_rounds)  as skaat_played  ,sum(team_2_score) as skaat_winned ,
       sum(team_2_akak) as akak, sum(team_2_akalat) as akalat , sum(team_2_moshtary_sun) as moshtary_sun ,

@@ -1,7 +1,7 @@
 const getPlayerById = async (playerId) => {
     try {
         let playerData = await strapi.db.connection.raw(`
-            select  p.id as player_id , p.name as player_name , p.twitter_link , p.snap_link , p.tiktok_link , 
+            select  p.id as player_id , p.name as player_name , p.twitter_link , p.snap_link , p.tiktok_link , p.youtube_link,
             fp.formats -> 'medium' ->> 'url' as player_image
             from players p 
             inner join files_related_morphs frmp on frmp.related_id = p.id
