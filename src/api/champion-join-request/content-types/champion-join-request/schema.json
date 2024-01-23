@@ -22,7 +22,7 @@
     },
     "phone": {
       "type": "string",
-      "required": true
+      "required": false
     },
     "fpName": {
       "type": "string",
@@ -79,6 +79,14 @@
       "relation": "manyToOne",
       "target": "api::followers-champion.followers-champion",
       "inversedBy": "tlbat_alandmam_llbtwlats"
+    },
+    "fpPhone": {
+      "type": "string",
+      "required": true
+    },
+    "spPhone": {
+      "type": "string",
+      "required": true
     }
   }
 }
