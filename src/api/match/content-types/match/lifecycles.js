@@ -1,5 +1,5 @@
 const { ApplicationError } = require("@strapi/utils").errors;
-
+const { MatchTeamData, CupMatch, MatchData, CupChampionTree } = require("../../../../Utils/CupTree");
 function orderLeagueTeams(team1, team2) {
     if (team1.totalScore === team2.totalScore) {
         return team2.abnat - team1.abnat;
@@ -229,12 +229,47 @@ async function generateLeagueTable(leagueId) {
     return tableArray;
 }
 
+async function generateCupTable(leagueId) {
+    let teamsData = await strapi.db.connection.raw(`
+        select t.id , t.name ,f.formats -> 'thumbnail' ->> 'url' as team_logo from leagues l 
+        join leagues_team_links ltl on ltl.league_id = l.id
+        join teams t on t.id = ltl.team_id
+		join files_related_morphs frm on frm.related_id = t.id
+        join files f on frm.file_id = f.id
+        where l.id = ${leagueId} and frm.related_type = 'api::team.team';
+    `)
+
+    let teams = {};
+    let teamsCount = 0;
+    teamsData.rows.forEach((team) => {
+        teams[team.id] = new MatchTeamData(team.id, team.team_logo, team.name)
+        teamsCount++;
+    });
+
+    let matchesData = await strapi.db.connection.raw(`
+    select m.id , mt1l.team_id as team_1_id, m.team_1_score, mt2l.team_id as team_2_id, m.team_2_score, m.start_at, m.state
+    from leagues l 
+    join matches_albtwlt_links mll on mll.league_id = l.id
+    join matches m on m.id = mll.match_id
+    join matches_team_1_links mt1l on m.id = mt1l.match_id
+    join matches_team_2_links mt2l on m.id = mt2l.match_id
+    where l.id = ${leagueId} and m.state= 'انتهت'
+    order by m.start_at asc;`)
+
+    let matches = [];
+    matchesData.rows.forEach((m) =>
+        matches.push(new MatchData(m.id, teams[m.team_1_id], teams[m.team_2_id], m.team_1_score, m.team_2_score, m.start_at, m.state))
+    );
+    let tree = new CupChampionTree(teamsCount, matches);
+    return tree.root;
+}
+
 async function handleCRUDMatch(matchId) {
     let leagues = await strapi.db.connection.raw(`
         select mll.league_id as leagueId , l.type
         from public.matches_albtwlt_links mll
         join leagues  l on l.id = mll.league_id
-        where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam')
+        where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam' or l.type = 'cup')
     `)
 
     if (leagues.rows.length != 1) {
@@ -261,9 +296,11 @@ async function handleCRUDMatch(matchId) {
         case 'league':
             tableArray = await generateLeagueTable(leagueid);
             break;
-
         case 'hezam':
             tableArray = await generateHezamTable(leagueid);
+            break;
+        case 'cup':
+            tableArray = await generateCupTable(leagueid);
             break;
     }
 
