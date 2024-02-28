@@ -253,15 +253,15 @@ async function generateCupTable(leagueId) {
     join matches m on m.id = mll.match_id
     join matches_team_1_links mt1l on m.id = mt1l.match_id
     join matches_team_2_links mt2l on m.id = mt2l.match_id
-    where l.id = ${leagueId} and m.state= 'انتهت'
+    where l.id = ${leagueId} 
     order by m.start_at asc;`)
 
     let matches = [];
     matchesData.rows.forEach((m) =>
         matches.push(new MatchData(m.id, teams[m.team_1_id], teams[m.team_2_id], m.team_1_score, m.team_2_score, m.start_at, m.state))
     );
-    let tree = new CupChampionTree(teamsCount, matches);
-    return tree.root;
+    let tree = new CupChampionTree(teamsCount, matches, teams);
+    return tree.getLevelsArrays();
 }
 
 async function handleCRUDMatch(matchId) {
@@ -389,7 +389,5 @@ module.exports = {
         let matchId = event.params.where.id;
         await handleCRUDMatch(matchId)
     },
-
-
 }
 
