@@ -69,7 +69,53 @@ getCaptain = async (teamId, atTime) => {
     } catch (error) {
         console.error(error);
     }
+}
 
+getTeamCoachById = async (teamId, atTime) => {
+    try {
+        let teamCoaches = await strapi.db.connection.raw(`
+        select * from (
+            select ctcl.coach_id as id,
+                c.name, ct.transfered_at, 'in' as direction  ,fp.formats->'thumbnail'->>'url' as image
+            from coaches_transfers ct
+                join coaches_transfers_to_team_links ctttl on ctttl.coaches_transfer_id = ct.id
+                join coaches_transfers_coach_links ctcl on ctcl.coaches_transfer_id = ct.id
+                join coaches c on c.id = ctcl.coach_id
+                inner join files_related_morphs frmp on frmp.related_id = c.id
+                inner join files fp on frmp.file_id = fp.id
+            where frmp.related_type = 'api::coach.coach'
+                and ctttl.team_id = ${teamId} ${atTime !== undefined ? ` and ct.transfered_at < '${atTime}' ` : ""}
+            union 
+            select ctcl.coach_id as id,
+                c.name, ct.transfered_at, 'out' as direction  ,fp.formats->'thumbnail'->>'url' as image
+            from coaches_transfers ct
+                join coaches_transfers_from_team_links ctftl on ctftl.coaches_transfer_id = ct.id
+                join coaches_transfers_coach_links ctcl on ctcl.coaches_transfer_id = ct.id
+                join coaches c on c.id = ctcl.coach_id
+                inner join files_related_morphs frmp on frmp.related_id = c.id
+                inner join files fp on frmp.file_id = fp.id
+            where frmp.related_type = 'api::coach.coach'
+                and ctftl.team_id = ${teamId} ${atTime !== undefined ? ` and ct.transfered_at < '${atTime}' ` : ""}
+                ) as moves order by transfered_at;
+        `)
+        const coachesMap = new Map();
+
+        teamCoaches.rows.forEach(coach => {
+            if (coach.direction === 'in')
+                coachesMap.set(coach.id, coach)
+            else
+                coachesMap.delete(coach.id)
+        });
+
+
+        let coaches = []
+        coachesMap.forEach((value, key) => {
+            coaches.push(value)
+        });
+        return coaches
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 getTeamInfoById = async (teamId) => {
@@ -210,5 +256,6 @@ module.exports = {
     getTeamWonAtChampionsById,
     getTeamTotalStatistics,
     getPlayerTransfersOfATeamById,
-    getAllTeams
+    getAllTeams,
+    getTeamCoachById
 }

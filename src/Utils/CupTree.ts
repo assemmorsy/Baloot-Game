@@ -138,11 +138,11 @@ class CupChampionTree {
     }
 
     applyMatchToNodes(node: CupMatch | null) {
-
         if (node === null || node.isLeafNode()) return;
 
         this.applyMatchToNodes(node.right);
         this.applyMatchToNodes(node.left);
+
         let leftWinnerId = node.left?.match?.getWinnerTeamId() ?? -1;
         let rightWinnerId = node.right?.match?.getWinnerTeamId() ?? -1;
         if (leftWinnerId === -1 && rightWinnerId === -1) {

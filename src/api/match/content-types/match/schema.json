@@ -199,6 +199,16 @@
       ],
       "default": "official",
       "required": true
+    },
+    "team_1_coach": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::coach.coach"
+    },
+    "team_2_coach": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::coach.coach"
     }
   }
 }

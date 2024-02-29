@@ -13,7 +13,9 @@ const getTeamsOfLeague = async (leagueId) => {
         let teams = await Promise.all(teamsIds.rows.map(async (team) => {
             let teamData = await teamRepo.getTeamInfoById(team.team_id);
             let teamPlayers = await teamRepo.getPlayersByTeamId(team.team_id, leagueData.end_at);
-            return { ...teamData, players: teamPlayers }
+            let teamCoaches = await teamRepo.getTeamCoachById(team.team_id, leagueData.end_at);
+
+            return { ...teamData, players: teamPlayers , coaches:teamCoaches }
         }))
         return { ...leagueData, teams };
     } catch (error) {

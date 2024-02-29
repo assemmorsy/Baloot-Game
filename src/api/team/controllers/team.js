@@ -18,8 +18,9 @@ module.exports = createCoreController('api::team.team', ({ strapi }) => {
                 const champs = await teamRepo.getTeamWonAtChampionsById(teamId);
                 const statistics = await teamRepo.getTeamTotalStatistics(teamId);
                 const transfers = await teamRepo.getPlayerTransfersOfATeamById(teamId);
+                const coaches = await teamRepo.getTeamCoachById(teamId);
 
-                return { data: { ...teamData, players, champs, statistics, transfers } }
+                return { data: { ...teamData, players, champs, statistics, transfers, coaches } }
 
             } catch (error) {
                 return { error_text: "error in fetching data from db" }

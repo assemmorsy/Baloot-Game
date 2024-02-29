@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "coaches_transfers",
+  "info": {
+    "singularName": "coaches-transfer",
+    "pluralName": "coaches-transfers",
+    "displayName": "اتقالات المدربين",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "transfered_at": {
+      "type": "date",
+      "required": true
+    },
+    "from_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "going_coaches"
+    },
+    "to_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "coming_coaches"
+    },
+    "coach": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::coach.coach"
+    }
+  }
+}

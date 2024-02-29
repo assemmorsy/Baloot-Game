@@ -62,6 +62,18 @@
       "relation": "manyToMany",
       "target": "api::league.league",
       "mappedBy": "team"
+    },
+    "going_coaches": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::coaches-transfer.coaches-transfer",
+      "mappedBy": "from_team"
+    },
+    "coming_coaches": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::coaches-transfer.coaches-transfer",
+      "mappedBy": "to_team"
     }
   }
 }
