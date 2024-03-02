@@ -10,14 +10,17 @@
     "strapi": "strapi"
   },
   "dependencies": {
-    "@retikolo/drag-drop-content-types": "^1.3.5",
-    "@strapi/plugin-i18n": "4.8.2",
-    "@strapi/plugin-users-permissions": "4.8.2",
-    "@strapi/provider-upload-local": "^4.16.2",
-    "@strapi/strapi": "4.8.2",
-    "better-sqlite3": "8.0.1",
+    "@retikolo/drag-drop-content-types": "1.5.2",
+    "@strapi/plugin-i18n": "4.20.3",
+    "@strapi/plugin-users-permissions": "4.20.3",
+    "@strapi/provider-upload-local": "4.20.3",
+    "@strapi/strapi": "4.20.3",
+    "better-sqlite3": "9.4.3",
     "pg": "^8.10.0",
-    "strapi-plugin-wysiwyg-react-md-editor": "^4.3.0"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^5.3.4",
+    "styled-components": "^5.3.11"
   },
   "author": {
     "name": "A Strapi developer"
@@ -26,7 +29,7 @@
     "uuid": "bf099413-2bb0-42a9-bca4-0590db932135"
   },
   "engines": {
-    "node": ">=14.19.1 <=18.x.x",
+    "node": ">=14.19.1",
     "npm": ">=6.0.0"
   },
   "license": "MIT"

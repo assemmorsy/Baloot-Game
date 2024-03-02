@@ -5,7 +5,6 @@
 import dragDropContentTypes from "@retikolo/drag-drop-content-types/strapi-admin";
 import i18N from "@strapi/plugin-i18n/strapi-admin";
 import usersPermissions from "@strapi/plugin-users-permissions/strapi-admin";
-import wysiwygReactMdEditor from "strapi-plugin-wysiwyg-react-md-editor/strapi-admin";
 import { renderAdmin } from "@strapi/strapi/admin";
 
 import customisations from "../../src/admin/app.js";
@@ -17,6 +16,5 @@ renderAdmin(document.getElementById("strapi"), {
     "drag-drop-content-types": dragDropContentTypes,
     i18n: i18N,
     "users-permissions": usersPermissions,
-    "wysiwyg-react-md-editor": wysiwygReactMdEditor,
   },
 });
