@@ -17,7 +17,7 @@ module.exports = (plugin) => {
             return { RequestId : data.data.id}           
         }catch (err){
             console.error(err);
-            throw err ; // return ctx.badRequest("error in sending notification." , err.message)
+            throw err ;
         }
     }   
 
@@ -52,7 +52,7 @@ module.exports = (plugin) => {
                 ctx.request.body =  {
                     username:  qydhaUser.username,
                     email: qydhaUser.email ?? `${qydhaUser.id}@zat.com`,
-                    password: `${qydhaUser.phone}${process.env.PASSWORD_SALT}`,
+                    password: `${qydhaUser.id}${process.env.PASSWORD_SALT}`,
                     qydha_Id : qydhaUser.id ,
                     phone : qydhaUser.phone ,
                     avatar_url :qydhaUser.avatarUrl ,
@@ -60,15 +60,24 @@ module.exports = (plugin) => {
                 }
                 return await strapi.plugin("users-permissions").controllers.auth.register(ctx);
             }else{
+                await strapi.entityService.update("plugin::users-permissions.user",user.id ,  
+                    {data : {
+                        username: qydhaUser.username,
+                        email: qydhaUser.email ?? `${qydhaUser.id}@zat.com`,
+                        phone : qydhaUser.phone ,
+                        avatar_url :qydhaUser.avatarUrl ,
+                        name : qydhaUser.name 
+                    }}
+                )
                 ctx.request.body =  {
                     identifier: qydhaUser.username,
-                    password: `${qydhaUser.phone}${process.env.PASSWORD_SALT}`
+                    password: `${qydhaUser.id}${process.env.PASSWORD_SALT}`
                 }
                 return await strapi.plugin("users-permissions").controllers.auth.callback(ctx);
             }
         }catch (err){
             console.error(err);
-            throw err ;// return ctx.badRequest("error in sending notification." , err.message)
+            throw err ;
         }
     }
 
