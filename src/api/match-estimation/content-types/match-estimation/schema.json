@@ -1,0 +1,60 @@
+{
+  "kind": "collectionType",
+  "collectionName": "match_estimations",
+  "info": {
+    "singularName": "match-estimation",
+    "pluralName": "match-estimations",
+    "displayName": "MatchEstimation"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "countOf400": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "countOfKaboots": {
+      "type": "integer",
+      "required": true,
+      "min": 0
+    },
+    "countOfRedCards": {
+      "type": "integer",
+      "min": 0,
+      "required": true
+    },
+    "loserScore": {
+      "type": "integer",
+      "min": 0,
+      "max": 1,
+      "required": true
+    },
+    "winner_team": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::team.team",
+      "inversedBy": "winner_at_estimations"
+    },
+    "best_player": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::player.player",
+      "inversedBy": "best_player_at_estimations"
+    },
+    "user": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "plugin::users-permissions.user",
+      "inversedBy": "match_estimations"
+    },
+    "match": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::match.match",
+      "inversedBy": "match_estimations"
+    }
+  }
+}

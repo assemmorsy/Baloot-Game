@@ -86,6 +86,9 @@ module.exports = createCoreController('api::match.match', ({ strapi }) => {
                     state: match.state,
                     start_at: match.start_at,
                     url: match.url,
+                    id:match.id, 
+                    startEstimationAt :match.start_estimations ,
+                    endEstimationAt :match.end_estimations ,
                     numberOfRounds: match.numberOfRounds,
                     tournament: match.tournment_name,
                     referees: match.referees.map((ref) => {

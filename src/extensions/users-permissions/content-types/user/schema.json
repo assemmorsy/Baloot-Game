@@ -76,6 +76,12 @@
     },
     "name": {
       "type": "string"
+    },
+    "match_estimations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match-estimation.match-estimation",
+      "mappedBy": "user"
     }
   }
 }

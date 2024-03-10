@@ -209,6 +209,18 @@
       "type": "relation",
       "relation": "oneToOne",
       "target": "api::coach.coach"
+    },
+    "match_estimations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match-estimation.match-estimation",
+      "mappedBy": "match"
+    },
+    "start_estimations": {
+      "type": "datetime"
+    },
+    "end_estimations": {
+      "type": "datetime"
     }
   }
 }

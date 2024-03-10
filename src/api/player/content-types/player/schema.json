@@ -49,6 +49,12 @@
     },
     "youtube_link": {
       "type": "string"
+    },
+    "best_player_at_estimations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match-estimation.match-estimation",
+      "mappedBy": "best_player"
     }
   }
 }

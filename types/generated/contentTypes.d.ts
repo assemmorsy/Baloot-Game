@@ -722,6 +722,11 @@ export interface PluginUsersPermissionsUser extends Schema.CollectionType {
     phone: Attribute.String;
     avatar_url: Attribute.String;
     name: Attribute.String;
+    match_estimations: Attribute.Relation<
+      'plugin::users-permissions.user',
+      'oneToMany',
+      'api::match-estimation.match-estimation'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1445,6 +1450,13 @@ export interface ApiMatchMatch extends Schema.CollectionType {
       'oneToOne',
       'api::coach.coach'
     >;
+    match_estimations: Attribute.Relation<
+      'api::match.match',
+      'oneToMany',
+      'api::match-estimation.match-estimation'
+    >;
+    start_estimations: Attribute.DateTime;
+    end_estimations: Attribute.DateTime;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1455,6 +1467,88 @@ export interface ApiMatchMatch extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::match.match',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiMatchEstimationMatchEstimation
+  extends Schema.CollectionType {
+  collectionName: 'match_estimations';
+  info: {
+    singularName: 'match-estimation';
+    pluralName: 'match-estimations';
+    displayName: 'MatchEstimation';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    countOf400: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    countOfKaboots: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    countOfRedCards: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    loserScore: Attribute.Integer &
+      Attribute.Required &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+          max: 1;
+        },
+        number
+      >;
+    winner_team: Attribute.Relation<
+      'api::match-estimation.match-estimation',
+      'manyToOne',
+      'api::team.team'
+    >;
+    best_player: Attribute.Relation<
+      'api::match-estimation.match-estimation',
+      'manyToOne',
+      'api::player.player'
+    >;
+    user: Attribute.Relation<
+      'api::match-estimation.match-estimation',
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
+    match: Attribute.Relation<
+      'api::match-estimation.match-estimation',
+      'manyToOne',
+      'api::match.match'
+    >;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::match-estimation.match-estimation',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::match-estimation.match-estimation',
       'oneToOne',
       'admin::user'
     > &
@@ -1494,6 +1588,11 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
       'api::team-captain.team-captain'
     >;
     youtube_link: Attribute.String;
+    best_player_at_estimations: Attribute.Relation<
+      'api::player.player',
+      'oneToMany',
+      'api::match-estimation.match-estimation'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1684,6 +1783,11 @@ export interface ApiTeamTeam extends Schema.CollectionType {
       'oneToMany',
       'api::coaches-transfer.coaches-transfer'
     >;
+    winner_at_estimations: Attribute.Relation<
+      'api::team.team',
+      'oneToMany',
+      'api::match-estimation.match-estimation'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<'api::team.team', 'oneToOne', 'admin::user'> &
@@ -1806,6 +1910,7 @@ declare module '@strapi/types' {
       'api::league.league': ApiLeagueLeague;
       'api::league-table.league-table': ApiLeagueTableLeagueTable;
       'api::match.match': ApiMatchMatch;
+      'api::match-estimation.match-estimation': ApiMatchEstimationMatchEstimation;
       'api::player.player': ApiPlayerPlayer;
       'api::player-transfer.player-transfer': ApiPlayerTransferPlayerTransfer;
       'api::referee.referee': ApiRefereeReferee;

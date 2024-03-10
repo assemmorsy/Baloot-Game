@@ -74,6 +74,12 @@
       "relation": "oneToMany",
       "target": "api::coaches-transfer.coaches-transfer",
       "mappedBy": "to_team"
+    },
+    "winner_at_estimations": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match-estimation.match-estimation",
+      "mappedBy": "winner_team"
     }
   }
 }
