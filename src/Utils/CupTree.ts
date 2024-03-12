@@ -145,21 +145,28 @@ class CupChampionTree {
 
         let leftWinnerId = node.left?.match?.getWinnerTeamId() ?? -1;
         let rightWinnerId = node.right?.match?.getWinnerTeamId() ?? -1;
+
+
         if (leftWinnerId === -1 && rightWinnerId === -1) {
             MatchData.createUndefinedMatch();
             return;
         }
         else if (leftWinnerId === -1 || rightWinnerId === -1) {
-            if (leftWinnerId !== -1)
-                MatchData.createUndefinedMatch(null, this.teams[leftWinnerId]);
-            if (rightWinnerId !== -1)
-                MatchData.createUndefinedMatch(this.teams[rightWinnerId], null);
+            if (leftWinnerId === -1)
+            {
+                node.match = MatchData.createUndefinedMatch(this.teams[rightWinnerId], null);
+            }
+            if (rightWinnerId === -1)
+            {
+                node.match = MatchData.createUndefinedMatch(null, this.teams[leftWinnerId]);
+            }
         }
         else {
             let match = this.matches.find(match =>
                 (match.team1.teamId === rightWinnerId || match.team1.teamId === leftWinnerId)
                 && (match.team2.teamId === rightWinnerId || match.team2.teamId === leftWinnerId))
             if (match !== undefined) {
+
                 node.match = match;
                 return;
             } else {
@@ -177,13 +184,15 @@ class CupChampionTree {
         while (true) {
             let current = queue.shift()
             if (!current) break;
-            if (current.left !== null) {
-                queue.push(current.left);
-                res[current.left.getHeight() - 1].push(current.left.match)
-            }
+            
             if (current.right !== null) {
                 queue.push(current.right);
                 res[current.right.getHeight() - 1].push(current.right.match)
+            }
+
+            if (current.left !== null) {
+                queue.push(current.left);
+                res[current.left.getHeight() - 1].push(current.left.match)
             }
         }
         return res;
