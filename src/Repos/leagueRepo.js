@@ -225,6 +225,25 @@ const getLeagueStatistics = async (leagueId) => {
     `)
     return data.rows
 }
+
+const getChampEstimationsTable = async (leagueId)=>{
+    let data = await strapi.db.connection.raw(
+        `
+        select u.id , u.username , u.avatar_url, SUM(estimation_score) as sum , count(*) as count from public.match_estimations me 
+        join public.match_estimations_user_links meul on meul.match_estimation_id = me.id
+        join public.match_estimations_match_links meml on meml.match_estimation_id = me.id
+        join public.up_users u on u.id = user_id
+        where meml.match_id IN (select m.id from matches m
+                                    join public.matches_albtwlt_links mal on mal.match_id = m.id
+                                    where mal.league_id = ${leagueId})
+            and u.blocked = false
+        group by u.id , u.username , u.avatar_url
+        having SUM(estimation_score) is not null 
+        order by sum desc , count asc
+        `
+    )
+    return data.rows  
+}
 module.exports = {
     getTeamsOfLeague,
     getLeagueInfoById,
@@ -235,5 +254,6 @@ module.exports = {
     getLeagueSummary,
     getAllStudiosOfLeague,
     getAllMatchesOfLeague,
-    getLeagueStatistics
+    getLeagueStatistics,
+    getChampEstimationsTable
 }

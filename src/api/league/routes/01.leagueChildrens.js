@@ -96,5 +96,14 @@ module.exports = {
                 policies: [],
             },
         },
+        {
+            method: "GET",
+            path: "/leagues/:id/estimations",
+            handler: "league.getChampionshipEstimationsTable",
+            config: {
+                auth: false,
+                policies: [],
+            },
+        },
     ]
 }

@@ -55,6 +55,12 @@
       "relation": "oneToMany",
       "target": "api::match-estimation.match-estimation",
       "mappedBy": "best_player"
+    },
+    "best_player_at": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::match.match",
+      "mappedBy": "best_player"
     }
   }
 }

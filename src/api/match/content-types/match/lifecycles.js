@@ -1,5 +1,5 @@
 const { ApplicationError } = require("@strapi/utils").errors;
-const { MatchTeamData, CupMatch, MatchData, CupChampionTree } = require("../../../../Utils/CupTree");
+const { MatchTeamData, MatchData, CupChampionTree } = require("../../../../Utils/CupTree");
 function orderLeagueTeams(team1, team2) {
     if (team1.totalScore === team2.totalScore) {
         return team2.abnat - team1.abnat;
@@ -264,53 +264,108 @@ async function generateCupTable(leagueId) {
     return tree.getLevelsArrays();
 }
 
-async function handleCRUDMatch(matchId) {
+async function handleLeagueTable(matchId){
     let leagues = await strapi.db.connection.raw(`
-        select mll.league_id as leagueId , l.type
-        from public.matches_albtwlt_links mll
-        join leagues  l on l.id = mll.league_id
-        where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam' or l.type = 'cup')
-    `)
+    select mll.league_id as leagueId , l.type
+    from public.matches_albtwlt_links mll
+    join leagues  l on l.id = mll.league_id
+    where mll.match_id = ${matchId} and l.published_at is not null and (l.type = 'league' or l.type = 'hezam' or l.type = 'cup')
+`)
 
-    if (leagues.rows.length != 1) {
-        // match not belong to a league
-        return;
+if (leagues.rows.length != 1) {
+    // match not belong to a league
+    return;
+}
+let { leagueid, type } = leagues.rows[0];
+
+let leagueTableData = await strapi.db.connection.raw(`
+    select league_tables.id 
+    from league_tables
+    inner join league_tables_league_links ltll on ltll.league_table_id = league_tables.id
+    where ltll.league_id = ${leagueid} 
+`)
+
+if (leagueTableData.rows.length === 0) {
+    // league not a table 
+    return;
+}
+let leagueTableID = leagueTableData.rows[0].id;
+
+let tableArray;
+switch (type) {
+    case 'league':
+        tableArray = await generateLeagueTable(leagueid);
+        break;
+    case 'hezam':
+        tableArray = await generateHezamTable(leagueid);
+        break;
+    case 'cup':
+        tableArray = await generateCupTable(leagueid);
+        break;
+}
+
+await strapi.db.connection.raw(`
+    UPDATE 
+    league_tables
+    SET data = '${JSON.stringify(tableArray)}'
+    WHERE league_tables.id = ${leagueTableID};
+`)
+
+}
+
+async function calculateMatchEstimationsScore(matchId){
+    let match = await strapi.entityService.findOne("api::match.match" , matchId ,{
+        populate :  ['team_1', 'team_2' , 'best_player']
+    })
+    console.log(match)
+    if( match.state !== "انتهت" || match.end_estimations === null || match.start_estimations === null) return ;
+    let winnerTeamId= -1 ; 
+    
+    if(match.team1_score ?? 0  >  match.team2_score ?? 0)
+        winnerTeamId = match.team_1?.id ?? -1 ; 
+    else {
+        winnerTeamId = match.team_2?.id ?? -1 ; 
     }
-    let { leagueid, type } = leagues.rows[0];
 
-    let leagueTableData = await strapi.db.connection.raw(`
-        select league_tables.id 
-        from league_tables
-        inner join league_tables_league_links ltll on ltll.league_table_id = league_tables.id
-        where ltll.league_id = ${leagueid} 
-    `)
-
-    if (leagueTableData.rows.length === 0) {
-        // league not a table 
-        return;
-    }
-    let leagueTableID = leagueTableData.rows[0].id;
-
-    let tableArray;
-    switch (type) {
-        case 'league':
-            tableArray = await generateLeagueTable(leagueid);
-            break;
-        case 'hezam':
-            tableArray = await generateHezamTable(leagueid);
-            break;
-        case 'cup':
-            tableArray = await generateCupTable(leagueid);
-            break;
+    let matchData = {
+        countOf400 : match.team1_400 ?? 0 + match.team2_400 ?? 0 , 
+        countOfKaboot : match.team1_kababit_hakam_count ?? 0 + match.team2_kababit_hakam_count ?? 0 + match.team1_kababit_sun_count ?? 0 + match.team2_kababit_sun_count ?? 0 , 
+        countOfRed : match.count_of_red_cards ?? 0 ,
+        loserScore : Math.min(match.team1_score ?? 0 , match.team2_score ?? 0 ) , 
+        bestPlayerId: match.best_player?.id ?? -1 ,
+        winnerTeamId
     }
 
-    await strapi.db.connection.raw(`
-        UPDATE 
-        league_tables
-        SET data = '${JSON.stringify(tableArray)}'
-        WHERE league_tables.id = ${leagueTableID};
-    `)
+    let matchEstimations = await strapi.entityService.findMany("api::match-estimation.match-estimation" , { 
+        populate:["best_player" , "winner_team"] ,
+        filters : {match:{id : matchId}}
+    })
+    matchEstimations.forEach(async (estimation)=>{
+        console.log(match.best_player)
+        let score = 0 ; 
+        if(matchData.winnerTeamId === estimation.winner_team.id && matchData.loserScore === estimation.loserScore )
+            score+=2;
+        if(matchData.countOf400 === estimation.countOf400)
+            score+=1;
+        if(matchData.countOfKaboot === estimation.countOfKaboots)
+            score+=3;
+        if(matchData.countOfRed === estimation.countOfRedCards)
+            score+=2;
+        if(matchData.bestPlayerId === estimation.best_player.id)
+            score+=2;
 
+        await strapi.entityService.update('api::match-estimation.match-estimation', estimation.id, {
+            data: {
+              estimation_score:score ,
+            },
+        });
+    })
+   
+}
+
+async function handleCRUDMatch(matchId) {
+    await handleLeagueTable(matchId);
+    await calculateMatchEstimationsScore(matchId)
 }
 
 module.exports = {

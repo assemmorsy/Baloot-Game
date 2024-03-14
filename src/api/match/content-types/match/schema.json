@@ -221,6 +221,16 @@
     },
     "end_estimations": {
       "type": "datetime"
+    },
+    "count_of_red_cards": {
+      "type": "integer",
+      "min": 0
+    },
+    "best_player": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::player.player",
+      "inversedBy": "best_player_at"
     }
   }
 }

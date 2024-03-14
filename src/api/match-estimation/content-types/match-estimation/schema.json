@@ -4,7 +4,8 @@
   "info": {
     "singularName": "match-estimation",
     "pluralName": "match-estimations",
-    "displayName": "MatchEstimation"
+    "displayName": "MatchEstimation",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -55,6 +56,9 @@
       "relation": "manyToOne",
       "target": "api::match.match",
       "inversedBy": "match_estimations"
+    },
+    "estimation_score": {
+      "type": "integer"
     }
   }
 }

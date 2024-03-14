@@ -1457,6 +1457,18 @@ export interface ApiMatchMatch extends Schema.CollectionType {
     >;
     start_estimations: Attribute.DateTime;
     end_estimations: Attribute.DateTime;
+    count_of_red_cards: Attribute.Integer &
+      Attribute.SetMinMax<
+        {
+          min: 0;
+        },
+        number
+      >;
+    best_player: Attribute.Relation<
+      'api::match.match',
+      'manyToOne',
+      'api::player.player'
+    >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1481,6 +1493,7 @@ export interface ApiMatchEstimationMatchEstimation
     singularName: 'match-estimation';
     pluralName: 'match-estimations';
     displayName: 'MatchEstimation';
+    description: '';
   };
   options: {
     draftAndPublish: false;
@@ -1539,6 +1552,7 @@ export interface ApiMatchEstimationMatchEstimation
       'manyToOne',
       'api::match.match'
     >;
+    estimation_score: Attribute.Integer;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     createdBy: Attribute.Relation<
@@ -1592,6 +1606,11 @@ export interface ApiPlayerPlayer extends Schema.CollectionType {
       'api::player.player',
       'oneToMany',
       'api::match-estimation.match-estimation'
+    >;
+    best_player_at: Attribute.Relation<
+      'api::player.player',
+      'oneToMany',
+      'api::match.match'
     >;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;

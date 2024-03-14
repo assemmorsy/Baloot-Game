@@ -123,5 +123,16 @@ module.exports = createCoreController("api::league.league", ({ strapi }) => {
 
     },
 
+    async getChampionshipEstimationsTable(ctx){
+      let leagueId = strapi.requestContext.get().params.id;
+      if (!leagueId || isNaN(leagueId)) {
+        console.log("from in valid ID ");
+        ctx.throw(404, "League Not Found");
+      }
+      let estTable = await leagueRepo.getChampEstimationsTable(leagueId)
+
+      return { data: estTable }
+    }
+
   };
 });
