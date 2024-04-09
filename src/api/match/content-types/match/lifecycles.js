@@ -317,7 +317,7 @@ async function calculateMatchEstimationsScore(matchId){
     let match = await strapi.entityService.findOne("api::match.match" , matchId ,{
         populate :  ['team_1', 'team_2' , 'best_player']
     })
-    console.log(match)
+    // console.log(match)
     if( match.state !== "انتهت" || match.end_estimations === null || match.start_estimations === null) return ;
     let winnerTeamId= -1 ; 
     
@@ -326,12 +326,12 @@ async function calculateMatchEstimationsScore(matchId){
     else {
         winnerTeamId = match.team_2?.id ?? -1 ; 
     }
-
+   
     let matchData = {
-        countOf400 : match.team1_400 ?? 0 + match.team2_400 ?? 0 , 
-        countOfKaboot : match.team1_kababit_hakam_count ?? 0 + match.team2_kababit_hakam_count ?? 0 + match.team1_kababit_sun_count ?? 0 + match.team2_kababit_sun_count ?? 0 , 
+        countOf400 : (match.team1_400 ?? 0) + (match.team2_400 ?? 0) , 
+        countOfKaboot :( match.team1_kababit_hakam_count ?? 0 )+ (match.team2_kababit_hakam_count ?? 0) +( match.team1_kababit_sun_count ?? 0) + (match.team2_kababit_sun_count ?? 0 ), 
         countOfRed : match.count_of_red_cards ?? 0 ,
-        loserScore : Math.min(match.team1_score ?? 0 , match.team2_score ?? 0 ) , 
+        loserScore : Math.min((match.team1_score ?? 0) ,( match.team2_score ?? 0 )) , 
         bestPlayerId: match.best_player?.id ?? -1 ,
         winnerTeamId
     }
@@ -341,7 +341,6 @@ async function calculateMatchEstimationsScore(matchId){
         filters : {match:{id : matchId}}
     })
     matchEstimations.forEach(async (estimation)=>{
-        console.log(match.best_player)
         let score = 0 ; 
         if(matchData.winnerTeamId === estimation.winner_team.id && matchData.loserScore === estimation.loserScore )
             score+=2;
